@@ -1,30 +1,59 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view/>
+  <div class="main-container">
+      <TheMenuComponent/>
+      <div class="body-wrapper">
+          <router-view v-slot="{ Component }">
+              <!-- Use any custom transition and  to `fade` -->
+              <!-- <transition name="moveUp" mode="out-in" > -->
+                <component :is="Component" />
+              <!-- </transition> -->
+          </router-view>
+      </div>
+
+
+  </div>
+
 </template>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script>
 
-nav {
-  padding: 30px;
-}
+import TheMenuComponent from './components/layout/TheMenuComponent.vue';
+import TheFooterComponent from './components/layout/TheFooterComponent.vue';
+import "./assets/main.scss";
+import "./assets/animations.scss";
+import "./assets/transitions.scss";
+import { loadFull } from "tsparticles";
+import * as particlesOptions from "./assets/particlesjs-config.json"
 
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
+export default {
+  name: 'App',
+  components: {
+    TheMenuComponent,
+    TheFooterComponent
+  },
+  data(){
+      return{
+          particlesOptions
+      }
+  },
+  async mounted() {
 
-nav a.router-link-exact-active {
-  color: #42b983;
+  },
+  methods:{
+      particlesInit : async engine => {
+          await loadFull(engine);
+      },
+
+     particlesLoaded : async container => {
+          console.log("Particles container loaded", container);
+      }
+  }
 }
+</script>
+
+
+
+<style lang="scss">
+
+
 </style>

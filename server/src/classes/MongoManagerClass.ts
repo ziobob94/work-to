@@ -20,9 +20,9 @@ export class MongoMangerClass{
         })
     }
     
-    public async validatePasswor(pwd){
+/*     public async validatePasswor(pwd){
         
-    }
+    } */
 
     public async insertUser(user){
         const newUser = {
@@ -34,15 +34,15 @@ export class MongoMangerClass{
             const user = await UserModel.create(newUser);
             if (user) {
                 console.log('User created successfully:', user);
-                return {result: true, message: "User created successfully"};
+                return {result: true, message: "User created successfully", code: 200};
             }
             else return null;
         }
         
         catch(error: any) {
             console.error('Error creating user:', error);
-            return {result: true, message: error.message};
-        };
+            return {result: false, message: error.message, code: 401};
+        }
     }
     
     public async connect() {

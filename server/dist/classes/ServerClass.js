@@ -19,8 +19,7 @@ const cors_1 = __importDefault(require("cors"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const MongoManagerClass_1 = require("./MongoManagerClass");
 const auth_1 = require("../router/routes/auth");
-const passport_1 = __importDefault(require("../passport"));
-const session_1 = __importDefault(require("../router/middlewares/session"));
+const passport_1 = __importDefault(require("../passport/passport"));
 class ServerClass {
     constructor() {
         this.mdb = new MongoManagerClass_1.MongoMangerClass();
@@ -34,18 +33,25 @@ class ServerClass {
         });
     }
     setMiddlewares() {
-        const sessionMDL = (0, session_1.default)(this.mdb.mongoStore);
-        this.server.use(sessionMDL);
-        // this.server.use(ensureAuthenticated)
         console.log("[serverClass.setMiddlewares] SUCCESS");
     }
     setRoutes() {
         (0, auth_1.bindAuthRoutes)(this.server, this.mdb);
-        // Error handling middleware
         this.server.use((err, req, res, next) => {
             res.status(500).json({ error: err.message });
         });
         console.log("[serverClass.setRoutes] SUCCESS");
+    }
+    initializeCors() {
+        const corsOptions = {
+            origin: JSON.parse(process.env.ALLOWED_HOSTS),
+            methods: JSON.parse(process.env.METHODS),
+            allowedHeaders: JSON.parse(process.env.ALLOWEDHEADERS),
+            exposedHeaders: JSON.parse(process.env.EXPOSEDHEADERS),
+            credentials: (process.env.CREDENTIALS === 'true'),
+            maxAge: parseInt(process.env.MAXAGE)
+        };
+        return (0, cors_1.default)(corsOptions);
     }
     init() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -53,13 +59,13 @@ class ServerClass {
                 dotenv_1.default.config();
                 const server = (0, express_1.default)();
                 const port = process.env.SERVER_PORT;
-                server.use((0, cors_1.default)());
+                const corsInstance = this.initializeCors();
+                server.use(corsInstance);
                 server.use(body_parser_1.default.json());
                 this.server = server;
+                this.server.use(passport_1.default.initialize());
                 this.setMiddlewares();
                 this.setRoutes();
-                this.server.use(passport_1.default.initialize());
-                this.server.use(passport_1.default.session());
                 server.listen(port);
                 console.log("[SERVER][ServerClass.run] Server listening on port: ", port);
                 return server;

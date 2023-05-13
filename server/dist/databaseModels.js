@@ -33,7 +33,6 @@ const userSchema = new mongoose_1.Schema({
         lowercase: true,
         validate: {
             validator: function (value) {
-                // Regular expression to validate email format
                 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                 return emailRegex.test(value);
             },
@@ -59,13 +58,11 @@ const userSchema = new mongoose_1.Schema({
                 const lowercaseRegex = /^(?=.*[a-z])/;
                 const symbolRegex = /^(?=.*[!@#$%^&*])/;
                 const numberRegex = /^(?=.*\d)/;
-                // Check each rule using the test method
                 const isLengthValid = lengthRegex.test(password);
                 const hasUppercase = uppercaseRegex.test(password);
                 const hasLowercase = lowercaseRegex.test(password);
                 const hasSymbol = symbolRegex.test(password);
                 const hasNumber = numberRegex.test(password);
-                // Return true if all rules pass, false otherwise
                 return (isLengthValid && hasUppercase && hasLowercase && hasSymbol && hasNumber);
             },
             message: 'Password must contain at least one uppercase letter, one lowercase letter, one symbol, and one number',

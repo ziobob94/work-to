@@ -1,0 +1,73 @@
+@keyframes slideInBottom {
+  from {
+    transform: translateY(50vh);
+  }
+  to{
+    transform: translateY(0vh);
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    transform: translateY(-60vh);
+  }
+  to{
+    transform: translateY(0vh);
+  }
+}
+
+@keyframes moveUp {
+  from {
+    transform: translateY(0);
+  }
+  to{
+    transform: translateY(-80vh);
+  }
+}
+
+
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+
+
+
+
+
+
+/***** TRANSITION *****/
+
+.moveUp-enter-from{
+   transform: translateY(-60vh);
+}
+
+.moveUp-enter-active {
+  animation: fadeIn 1s ease-in;
+}
+
+.moveUp-leave-active{
+  animation: moveUp 1.3s ease-in, fadeOut 1.3s ease-in;
+}
+
+

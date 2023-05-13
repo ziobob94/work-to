@@ -22,7 +22,7 @@ const sessionMiddleware = (store) => {
             secret: generateSecretKey(),
             resave: false,
             saveUninitialized: true,
-            store: store,
+            //        store: store,
             cookie: { secure: false, maxAge: parseInt(process.env.SESSION_DURATION) }
             // Set secure: true if using HTTPS
         });

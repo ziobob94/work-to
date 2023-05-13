@@ -28,10 +28,6 @@ class MongoMangerClass {
             return null;
         });
     }
-    validatePasswor(pwd) {
-        return __awaiter(this, void 0, void 0, function* () {
-        });
-    }
     insertUser(user) {
         return __awaiter(this, void 0, void 0, function* () {
             const newUser = {
@@ -43,24 +39,22 @@ class MongoMangerClass {
                 const user = yield databaseModels_1.UserModel.create(newUser);
                 if (user) {
                     console.log('User created successfully:', user);
-                    return { result: true, message: "User created successfully" };
+                    return { result: true, message: "User created successfully", code: 200 };
                 }
                 else
                     return null;
             }
             catch (error) {
                 console.error('Error creating user:', error);
-                return { result: true, message: error.message };
+                return { result: false, message: error.message, code: 401 };
             }
-            ;
         });
     }
     connect() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 dotenv_1.default.config();
-                // MongoDB connection
-                const mongoURI = process.env.MDB_URI + "/" + process.env.MDB_DATABASE; // Replace with your MongoDB URI
+                const mongoURI = process.env.MDB_URI + "/" + process.env.MDB_DATABASE;
                 const db = yield mongoose_1.default.connect(mongoURI);
                 this.mongoStore = connect_mongo_1.default.create({ mongoUrl: mongoURI });
                 console.log("[MongoMangerClass.connect] DATABASE CONNECTION RESULT: ", !!db);

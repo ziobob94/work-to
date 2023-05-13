@@ -1,0 +1,134 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+* {
+  font-family: "Roboto", sans-serif;
+}
+
+h1 {
+  margin: 0;
+  font-size: 2.6rem;
+}
+
+* ::-webkit-scrollbar {
+  display: none;
+}
+
+.text {
+  flex: 1 1 auto;
+  font-size: 1.4rem;
+}
+
+p {
+  padding: 0;
+  margin: 0;
+}
+
+img {
+  image-rendering: auto;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+
+  /* Safari seems to support, but seems deprecated and does the same thing as the others. */
+  image-rendering: -webkit-optimize-contrast;
+}
+
+/* ********** MAIN  CONTAINERS ************** */
+.main-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  min-height: 100vh;
+  position: relative;
+  background: #432954;
+  background: linear-gradient(90deg, #432954 0%, #2f0f5b 43%, #042e32 100%);
+}
+
+.body-container {
+  position: absolute;
+  width: 100%;
+  padding: 1rem;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex: 1 1 auto;
+  height: calc(100vh - (50px + 1rem));
+  background: #432954;
+  background: linear-gradient(90deg, #432954 0%, #2f0f5b 43%, #042e32 100%);
+  margin-top: calc(50px + 1rem);
+  /*  background: #024955*/
+}
+.body-container.sk {
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: unset;
+}
+
+/* **************** BODY CONTENT PAGES ************** */
+.body-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 1rem;
+}
+.body-content.home {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+.body-content.home.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 1rem;
+  max-width: 30rem;
+  margin-bottom: 2rem;
+}
+.body-content.home.wrapper.el {
+  margin: 0;
+  height: auto;
+  padding-right: 0.8rem;
+}
+.body-content.home.wrapper.el.description {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+}
+.body-content.home.wrapper.el.tail {
+  display: flex;
+  align-items: flex-end;
+}
+.body-content.skills {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: calc(100vh - (50px + 2rem));
+}
+.body-content.skills.wrapper.el.title {
+  cursor: pointer;
+  height: auto;
+  margin-top: 11%;
+}
+.body-content.skills.wrapper.el.description {
+  flex-direction: row;
+  flex-wrap: wrap;
+  display: flex;
+  height: auto;
+  gap: 2.3rem;
+  max-width: 80%;
+}
+
+.list-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/*# sourceMappingURL=main.css.map */
+
+
+
