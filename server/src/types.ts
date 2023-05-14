@@ -1,7 +1,7 @@
 export type ApiReturn = {
     result: boolean,
     message: string,
-    code?: number,
+    code: number,
     data?: any,
     error?: any
 }

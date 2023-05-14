@@ -22,7 +22,8 @@
 </template>
 
 <script>
-import Cookies from 'js-cookie';
+//import Cookies from 'js-cookie';
+import { mapActions, mapMutations } from 'vuex';
 
 export default {
     name:'LoginFormComponent',
@@ -36,6 +37,8 @@ export default {
         }
     },
     methods:{
+        ...mapMutations(["setAuthenticated"]),
+        ...mapActions(["handleLoginAPI"]),
         async handleSubmit(ev){
             const swalOpt = {
                             title: "Fail",
@@ -48,25 +51,32 @@ export default {
                 ev.preventDefault();
 
                 console.log("[LoginFormComponent] DATA: ", this.loginData, `\n THIS:`, this.$);
-                const logged = await this.$http.post("/api/login",this.loginData );
+                
+                const logged = await this.handleLoginAPI( {email: this.loginData.email, password: this.loginData.password} );
 
                 this.logged = !!logged;
+                
                 console.log("[LoginFormComponent] LOGGED: ", logged);
-                const loggedUser = (logged?.data?.loggedUser);
+                
+                const loggedUser = (logged?.data);
 
                 if(loggedUser){
-                        swalOpt.title = (loggedUser.result) ? "User Logged" : "Login Fails";
-                        swalOpt.text = loggedUser.message;
-                        swalOpt.icon = (loggedUser.result) ? "success" : "error";
-                        // eslint-disable-next-line no-debugger
-                        debugger;
-                        if(loggedUser.data) {
-                            Cookies.set("auth", loggedUser.data, {expires: 1 });
-                            this.$http.defaults.headers.common.Authorization = 'Bearer ' + loggedUser.data // Replace with your authorization token
-                               
-                        }
+                    swalOpt.title = (loggedUser.result) ? "User Logged" : "Login Fails";
+                    swalOpt.text = loggedUser.message;
+                    swalOpt.icon = (loggedUser.result) ? "success" : "error";
+
+/*                     if(loggedUser.result){
+                        Cookies.set("auth", loggedUser.data, {expires: 1 });
+                        this.$http.defaults.headers.common.Authorization = 'Bearer ' + loggedUser.data // Replace with your authorization token
+                        this.setAuthenticated(true);
+                    } */
+
                 }
-                this.$swal.fire(swalOpt);
+                await this.$swal.fire(swalOpt);
+
+                // eslint-disable-next-line no-debugger
+                // debugger;
+                if(loggedUser.data) this.$router.push({ path: "/home" });
                 
             }
             catch(err){

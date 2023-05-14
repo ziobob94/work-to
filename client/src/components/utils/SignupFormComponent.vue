@@ -54,6 +54,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
 //import axios from "axios";
 export default {
     name:'SignupFormComponent',
@@ -68,6 +69,7 @@ export default {
         }
     },
     methods:{
+        ...mapActions(["handleLoginAPI"]),
         async handleSubmit(ev){
             const swalOpt = {
                             title: "Fail",
@@ -75,7 +77,7 @@ export default {
                             icon: "error",
                             showConfirtButton: true,
                             confirmButtonText: "Ok"
-                }
+            }
             try{ 
                 ev.preventDefault();
                 // eslint-disable-next-line no-debugger
@@ -87,13 +89,21 @@ export default {
                 //debugger;
                 this.logged = !!logged;
                 console.log("[SignupFormComponent] LOGGED: ", logged);
-                const userInserted = (logged?.data?.registeredUser);
+                const userInserted = (logged?.data);
+                let userLogged = false;
                 if(userInserted){
                         swalOpt.title = (userInserted.result) ? "User Created" : "Creation Fails";
                         swalOpt.text = userInserted.message;
                         swalOpt.icon = (userInserted.result) ? "success" : "error";
+                        userLogged = await this.handleLoginAPI({email: this.signupData.email, password: this.signupData.password});
+                        swalOpt.text = userLogged.message;
+                       
                 }
+
                 await this.$swal.fire(swalOpt);
+
+                if(userLogged.result) this.$router.push({path: "/home"})
+
             }
             catch(err){
                 console.error("[SignupFormComponent] ERROR: ", err);
@@ -103,6 +113,7 @@ export default {
 
             }
         }
+        
     }
 }
 </script>

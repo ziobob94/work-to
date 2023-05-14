@@ -3,9 +3,7 @@ import { MongoMangerClass } from "../../classes/MongoManagerClass";
 import { Express } from "express";
 import dotenv from 'dotenv';
 import { registrationHandler, loginHandler, validateHandler, logoutHandler } from "../controllers/auth";
-import { ApiReturn } from "../../types";
 import passport from "passport";
-import { normalizeResponse } from "../../utils";
 dotenv.config();
 
 
@@ -30,13 +28,10 @@ export function bindAuthRoutes(app: Express, db: MongoMangerClass) {
         }));
         */
         
-
         app.post('/login',
         /* passport.authenticate('jwt', {session: false}), */
             loginHandler
         );
-        
-        
         
         
         app.get('/logout', 

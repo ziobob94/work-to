@@ -22,8 +22,6 @@ import TheFooterComponent from './components/layout/TheFooterComponent.vue';
 import "./assets/main.scss";
 import "./assets/animations.scss";
 import "./assets/transitions.scss";
-import { loadFull } from "tsparticles";
-import * as particlesOptions from "./assets/particlesjs-config.json"
 
 export default {
   name: 'App',
@@ -33,20 +31,12 @@ export default {
   },
   data(){
       return{
-          particlesOptions
       }
   },
   async mounted() {
 
   },
   methods:{
-      particlesInit : async engine => {
-          await loadFull(engine);
-      },
-
-     particlesLoaded : async container => {
-          console.log("Particles container loaded", container);
-      }
   }
 }
 </script>

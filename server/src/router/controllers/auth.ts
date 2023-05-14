@@ -3,7 +3,6 @@ import jwt from "jsonwebtoken";
 import { UserModel } from "../../databaseModels";
 import { ApiReturn } from '../../types';
 import { MongoMangerClass } from '../../classes/MongoManagerClass';
-import { normalizeResponse } from '../../utils';
 
 
 async function loginHelper(req: any) : Promise<ApiReturn> {
@@ -44,11 +43,9 @@ async function loginHelper(req: any) : Promise<ApiReturn> {
     }
 }
 
-
 export async function loginHandler (req: any, res: any){
     const logRes: ApiReturn = await loginHelper(req); 
-    const norm = normalizeResponse(res, logRes, "loggedUser");
-    res.json(norm);
+    res.json(logRes);
 }
 
 
@@ -64,44 +61,63 @@ async function hashPassword(password: string): Promise<string> {
 async function registerHelper(req: any, res: any, db: MongoMangerClass): Promise<ApiReturn>{
     console.log("[routes.auth.bindAuthRoutes] ROURTE -> /regiter");
     
-    let userInserted : ApiReturn = {"result": false, message: "Signup Failed" };
+    let userInserted : ApiReturn = {result: false, message: "Signup Failed", code: 500 };
     
-    const user: any = req.body;
-    
-    if(!user || !Object.keys(user).length) {
-        res.statusCode = 409;
-        res.statusMessage = "REQUEST_FOR_EMPTY_USER";
-        userInserted.message = "Missing data"
-        return res.send(userInserted);
+    try {
+        const user: any = req.body;
+        
+        if(!user || !Object.keys(user).length) {
+            res.statusCode = 409;
+            res.statusMessage = "REQUEST_FOR_EMPTY_USER";
+            userInserted.message = "Missing data"
+            return userInserted;
+        }
+        
+        user.password = await hashPassword(user.password);
+        
+        userInserted = await db.insertUser(user);
     }
-    
-    user.password = await hashPassword(user.password);
-    
-    userInserted = await db.insertUser(user);
+    catch(err){
+        console.error("[auth.registerHelper] ERROR: ", err)
+        userInserted = {result: false, message: "Signup Failed", code: 500 };
+    }
     
     return userInserted; 
 }
 
 export async function registrationHandler (req: any,res: any, db: MongoMangerClass) {
     const regRes : ApiReturn = await registerHelper(req, res, db);
-    const norm = normalizeResponse(res, regRes, "registeredUser");
-    res.json(norm)
+    res.json(regRes)
 }
+
+
 
 
 
 async function tokenValidationHandler(req: any): Promise<ApiReturn> {
-        const ret : ApiReturn = {
-            result: true,
-            message: "ok"
-        }
-        return ret;
+    const ret : ApiReturn = {
+        result: true,
+        message: "ok",
+        code: 200
+    }
+    return ret;
+    
 }
 
 export async function validateHandler (req: any,res: any) {
-    const validatedRes : ApiReturn = await tokenValidationHandler(req);
-    const norm = normalizeResponse(res, validatedRes, "validationToken");
-    res.json(norm)
+    let response : ApiReturn = {
+        result: false,
+        message: 'Token Validation Error',
+        code: 500
+    }
+    try{
+        response = await tokenValidationHandler(req);
+    }
+    catch(err){
+        console.error("[auth.validateHandler] ERROR: ", err);
+    }
+
+    res.json(response);
 }
 
 
@@ -109,6 +125,19 @@ export async function validateHandler (req: any,res: any) {
 
 
 export async function logoutHandler(req, res) {
-    req.logout();
-    res.redirect('/');
+    const response : ApiReturn = {
+        result: false,
+        message: 'Error on logout',
+        code: 500
+    }
+    try{
+        response.result = true;
+        response.message = 'Logout success'
+        response.code = 200;
+    }
+    catch(err){
+        console.error("[auth.validateHandler] ERROR: ", err);
+    }
+
+    res.json(response);
 }

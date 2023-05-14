@@ -1,5 +1,5 @@
 /* eslint-disable no-debugger */
-import AboutPageComponent from "./components/views/AboutPageComponent.vue";
+import AboutPageComponent from "../components/views/AboutPageComponent.vue";
 import HomePageComponent from "@/components/views/HomePageComponent.vue";
 import LifePageComponent from "@/components/views/LifePageComponent.vue";
 import SkillsComponent from "@/components/views/SkillsPageComponent.vue";
@@ -7,18 +7,22 @@ import LoginComponent from "@/components/views/LoginPageComponent.vue";
 import SignupComponent from "@/components/views/SignupPageComponent.vue";
 import * as Router from 'vue-router';
 import configs from '@/assets/configs.json';
-import { instance } from "./main";
+import { instance } from "../main";
 import Cookies from 'js-cookie';
-
 
     
     const verifyToken = async () => {
-        const cookieToken = Cookies.get("auth");
-        instance.defaults.headers.common.Authorization = 'Bearer ' + cookieToken;
-        const isValid = await instance.get("/api/validate-token")
+        let isValid = false
+        try {
+            const cookieToken = Cookies.get("auth");
+            instance.defaults.headers.common.Authorization = 'Bearer ' + cookieToken;
+            isValid = await instance.get("/api/validate-token");
+        }
+        catch(err){
+            isValid = false;
+        }
         return isValid;
     }
-
 
     const checkAuthentHandler = async (to) => {
         const isAuthenticated = await verifyToken();
@@ -77,27 +81,7 @@ import Cookies from 'js-cookie';
             hash: '#login',
             path: '/login',
             component: LoginComponent,
-            meta: { transitionName: '' },
-            beforeEnter : async (to, from, next) => {
-                let isAuth = false;
-                try{
-                    isAuth = await checkAuthentHandler(to, next);
-                }
-                catch(err){
-                    console.log("CHEKC AUTH from", isAuth);
-                    isAuth = false;
-    
-                }
-    
-                console.log("CHEKC AUTH from", isAuth);
-    
-                if(isAuth)  next({name: 'index'});
-                else {
-                    // window.alert("PLEASE LOG IN TO ACCESS")
-                    //debugger
-                    next({name: "login"});
-                }
-            }
+            meta: { transitionName: '' }
         },
         {
             name: 'signup',
@@ -111,10 +95,15 @@ import Cookies from 'js-cookie';
     routes[0].children.forEach((element) => {
                     // eslint-disable-next-line no-unused-vars
         element.beforeEnter = async (to, from, next) => {
+
             console.log("CHEKC AUTH to", to);
+
             console.log("CHEKC AUTH from", from);
-            // debugger;
+
+            //debugger;
+            
             let isAuth = false;
+
             try{
                 isAuth = await checkAuthentHandler(to, next);
             }
@@ -124,7 +113,13 @@ import Cookies from 'js-cookie';
 
             }
 
-            console.log("CHEKC AUTH from", isAuth);
+
+            //store.mutations
+
+            console.log("CHECK ROUTER", router.store);
+
+            router.store.commit("setAuthenticated", isAuth);
+
 
             if(isAuth)  next();
             else {
@@ -132,6 +127,8 @@ import Cookies from 'js-cookie';
                 //debugger
                 next({name: "login"});
             }
+
+
         }
     });
     
@@ -149,6 +146,6 @@ import Cookies from 'js-cookie';
         const fromDepth = from.path.split('/').length
         to.meta.transition = toDepth < fromDepth ? 'moveUp' : 'moveUp'
     })*/
-    
+ 
     
     export default router;
