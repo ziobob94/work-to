@@ -116,7 +116,7 @@ export default {
             }
             try{
                 const outResp = await this.$http.get("/api/logout");
-                console.log("[TheMenuComponent.logutHandle]", outResp.data);
+                // // console.log("[TheMenuComponent.logutHandle]", outResp.data);
                 if(outResp.data.result){
                     swalOpt.title = "Success";
                     swalOpt.text = "Logout Ok";

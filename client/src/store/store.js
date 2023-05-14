@@ -23,11 +23,11 @@ const store = createStore({
     async handleLoginAPI({state,commit},loginData){
 
       try{ 
-          console.log("[handleLoginAPI] DATA: ", loginData);
+          // console.log("[handleLoginAPI] DATA: ", loginData);
           const logged = await instance.post("/api/login", loginData );
           if(logged.data.result){
               Cookies.set("auth", logged.data.data, {expires: 1 });
-              console.log("INSTANCE ", instance.defaults.headers.common);
+              // console.log("INSTANCE ", instance.defaults.headers.common);
               instance.defaults.headers.common.Authorization = 'Bearer ' + logged.data.data // Replace with your authorization token
               commit("setAuthenticated", true)
           }

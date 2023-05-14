@@ -96,9 +96,9 @@ import Cookies from 'js-cookie';
                     // eslint-disable-next-line no-unused-vars
         element.beforeEnter = async (to, from, next) => {
 
-            console.log("CHEKC AUTH to", to);
+            // console.log("CHEKC AUTH to", to);
 
-            console.log("CHEKC AUTH from", from);
+            // console.log("CHEKC AUTH from", from);
 
             //debugger;
             
@@ -108,7 +108,7 @@ import Cookies from 'js-cookie';
                 isAuth = await checkAuthentHandler(to, next);
             }
             catch(err){
-                console.log("CHEKC AUTH from", isAuth);
+                // console.log("CHEKC AUTH from", isAuth);
                 isAuth = false;
 
             }
@@ -116,7 +116,7 @@ import Cookies from 'js-cookie';
 
             //store.mutations
 
-            console.log("CHECK ROUTER", router.store);
+            // console.log("CHECK ROUTER", router.store);
 
             router.store.commit("setAuthenticated", isAuth);
 

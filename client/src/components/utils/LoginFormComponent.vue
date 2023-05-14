@@ -50,13 +50,13 @@ export default {
             try{ 
                 ev.preventDefault();
 
-                console.log("[LoginFormComponent] DATA: ", this.loginData, `\n THIS:`, this.$);
+                // // console.log("[LoginFormComponent] DATA: ", this.loginData, `\n THIS:`, this.$);
                 
                 const logged = await this.handleLoginAPI( {email: this.loginData.email, password: this.loginData.password} );
 
                 this.logged = !!logged;
                 
-                console.log("[LoginFormComponent] LOGGED: ", logged);
+                // // console.log("[LoginFormComponent] LOGGED: ", logged);
                 
                 const loggedUser = (logged?.data);
 
@@ -92,9 +92,9 @@ export default {
                 // eslint-disable-next-line no-debugger
                 // debugger;
 
-                console.log("[LoginFormComponent] DATA: ", this.loginData);
-                const logged = await this.$http.get("/api/profile-data");
-                console.log("[LoginFormComponent] DATA: ", logged);
+                // console.log("[LoginFormComponent] DATA: ", this.loginData);
+                await this.$http.get("/api/profile-data");
+                // console.log("[LoginFormComponent] DATA: ", logged);
             }
             catch(err){
                 console.error("[SignupFormComponent] ERROR: ", err);

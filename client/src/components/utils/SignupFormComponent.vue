@@ -83,12 +83,12 @@ export default {
                 // eslint-disable-next-line no-debugger
                 // debugger;
 
-                console.log("[SignupFormComponent] DATA: ", this.signupData);
+                // console.log("[SignupFormComponent] DATA: ", this.signupData);
                 const logged = await this.$http.post("/api/register",this.signupData );
                 // eslint-disable-next-line no-debugger
                 //debugger;
                 this.logged = !!logged;
-                console.log("[SignupFormComponent] LOGGED: ", logged);
+                // console.log("[SignupFormComponent] LOGGED: ", logged);
                 const userInserted = (logged?.data);
                 let userLogged = false;
                 if(userInserted){
