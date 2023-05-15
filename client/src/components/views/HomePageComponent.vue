@@ -39,14 +39,5 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
-.body-wrapper{
-    display: flex;
-    flex-direction: column;
-    max-width: 30%;
-    gap: 2rem;
-    .home{
-        position: relative;
-    }
-}
 
 </style>

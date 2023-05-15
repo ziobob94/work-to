@@ -1,30 +1,6 @@
 <!-- eslint-disable vue/no-use-v-if-with-v-for -->
 <template>
-   <!--  <div class="navigator-container">
-        
-        <div v-for="(link) in items"  
-             :key="link.name"  
-             class="navigator-item"
-             :style="{
-                    display: (!link.conditional) ? 'flex' : this.checkVisibility(link)
-                }"
-             @click="navigate(link.to)"
-             :ref="link.name"
-        >
-            <i :class="link.icon"></i>
-            
-        </div>
 
-        <div  class="navigator-item"                 
-              :style="{
-                    display: (getAuthenticationStatus) ? 'flex' : 'none'
-              }"
-              @click="logoutHandle()"
-        > 
-            <i class="pi pi-home"></i>
-        </div>
-
-    </div> -->
     <v-bottom-navigation :grow="true" v-model="value" color="primary">
         <v-btn
             v-for="item in items"
@@ -44,9 +20,10 @@
                 }"
             route="/logout"
             exact
+            @click="logoutHandle"
             tile
         >
-            {{ Logout }}
+            Logout
         </v-btn>
   </v-bottom-navigation>
 

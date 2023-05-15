@@ -1,56 +1,80 @@
 <template>
     <div class="auth-from-container">
-        <h1>Signup Form</h1>
-        <form class="auth-from" accept-charset="UTF-8" @submit="handleSubmit($event)">
-    
-            <div class="form-fields">
-                <label for="email">Email</label>
-                <input type="email" 
-                        id="email" 
-                        name="email" 
-                        v-model="signupData.email" 
-                        placeholder="Insert your email" 
-                        required
-                />
-            </div>
+        
+        <v-card
+        class="mx-auto"
+        max-width="344"
+        title="User Registration"
+        >
+        <v-container>
+            <v-text-field
+                v-model="signupData.first"
+                color="primary"
+                label="First name"
+                variant="outlined" 
+            ></v-text-field>
+            
+            <v-text-field
+                v-model="signupData.last"
+                color="primary"
+                label="Last name"
+                variant="outlined" 
+            ></v-text-field>
             
             
-            <div class="form-fields">
-                <label for="username">Username</label>
-                <input type="username" 
-                        id="username" 
-                        name="username" 
-                        v-model="signupData.username" 
-                        placeholder="Insert your username" 
-                        required
-                />
-            </div>
+            <v-text-field
+                v-model="signupData.username"
+                color="primary"
+                label="Username"
+                variant="outlined" 
+            ></v-text-field>
+            
+            <v-text-field
+                v-model="signupData.email"
+                color="primary"
+                label="Email"
+                variant="outlined" 
+                :rules="[() => validateRule('email')]"
+            ></v-text-field>
+            
+            <v-text-field
+                v-model="signupData.password"
+                color="primary"
+                label="Password"
+                variant="outlined" 
+                type="password"
 
-            <div class="form-fields">
-                <label for="password">Password</label>
-                <input type="password" 
-                        id="password" 
-                        name="password" 
-                        v-model="signupData.password" 
-                        placeholder="Insert your password"  
-                        required
-                />
-            </div>
+            ></v-text-field >
+            
+            <v-text-field
+                v-model="signupData.confirm"
+                color="primary"
+                label="Confirm your password"
+                variant="outlined" 
+                type="password"
+            ></v-text-field>
+            
+            <v-checkbox
+                v-model="terms"
+                color="secondary"
+                label="I agree to site terms and conditions"
+            ></v-checkbox>
+        </v-container>
+        
+        <v-divider></v-divider>
+        
+        <v-card-actions>
+            <v-spacer></v-spacer>
+            
+            <v-btn @click="handleSubmit" color="success">
+                Complete Registration
+                
+                <v-icon icon="mdi-chevron-right" end></v-icon>
+            </v-btn>
+        </v-card-actions>
+    </v-card>
 
-            <div class="form-fields">
-                <label for="confirm-password">Confirm Password</label>
-                <input type="confirm-password" 
-                    id="confirm-password" 
-                    name="confirm-password" 
-                    v-model="signupData.confirm" 
-                    placeholder="Confirm your password"  
-                    required
-                />
-            </div>
-    
-            <button type="submit">Signup</button>
-        </form>
-    </div>
+</div>
 </template>
 
 <script>
@@ -61,10 +85,13 @@ export default {
     data(){
         return{
             signupData: {
+                first: "",
+                last: "",
                 email: "",
                 username: "",
                 password: "",
-                confirm: ""
+                confirm: "",
+                terms: ""
             }
         }
     },
@@ -72,17 +99,17 @@ export default {
         ...mapActions(["handleLoginAPI"]),
         async handleSubmit(ev){
             const swalOpt = {
-                            title: "Fail",
-                            text: "Ops some error occurred, please try again",
-                            icon: "error",
-                            showConfirtButton: true,
-                            confirmButtonText: "Ok"
+                title: "Fail",
+                text: "Ops some error occurred, please try again",
+                icon: "error",
+                showConfirtButton: true,
+                confirmButtonText: "Ok"
             }
             try{ 
                 ev.preventDefault();
                 // eslint-disable-next-line no-debugger
                 // debugger;
-
+                
                 // console.log("[SignupFormComponent] DATA: ", this.signupData);
                 const logged = await this.$http.post("/api/register",this.signupData );
                 // eslint-disable-next-line no-debugger
@@ -92,25 +119,35 @@ export default {
                 const userInserted = (logged?.data);
                 let userLogged = false;
                 if(userInserted){
-                        swalOpt.title = (userInserted.result) ? "User Created" : "Creation Fails";
-                        swalOpt.text = userInserted.message;
-                        swalOpt.icon = (userInserted.result) ? "success" : "error";
-                        userLogged = await this.handleLoginAPI({email: this.signupData.email, password: this.signupData.password});
-                        swalOpt.text = userLogged.message;
-                       
+                    swalOpt.title = (userInserted.result) ? "User Created" : "Creation Fails";
+                    swalOpt.text = userInserted.message;
+                    swalOpt.icon = (userInserted.result) ? "success" : "error";
+                    userLogged = await this.handleLoginAPI({email: this.signupData.email, password: this.signupData.password});
+                    swalOpt.text = userLogged.message;
+                    
                 }
-
+                
                 await this.$swal.fire(swalOpt);
-
+                
                 if(userLogged.result) this.$router.push({path: "/home"})
-
+                
             }
             catch(err){
                 console.error("[SignupFormComponent] ERROR: ", err);
                 // eslint-disable-next-line no-debugger
                 // debugger;
                 this.$swal.fire(swalOpt)
-
+                
+            }
+        },
+        validateRule(ruleID){
+            if(ruleID === 'email') {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (emailRegex.test(this.signupData[ruleID])) {
+                console.log("Valid email address");
+                } else {
+                console.log("Invalid email address");
+                }
             }
         }
         
