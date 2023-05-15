@@ -29,7 +29,7 @@ export function bindAuthRoutes(app: Express, db: MongoMangerClass) {
         */
         
         app.post('/login',
-        /* passport.authenticate('jwt', {session: false}), */
+            /* passport.authenticate('jwt', {session: false}), */
             loginHandler
         );
         

@@ -2,7 +2,7 @@ import { ApiReturn } from "./types";
 
 export function normalizeResponse( res: any, data: ApiReturn, key: string ): { [key: string]: ApiReturn} {
     try{   
-         let code = 500;
+        let code = 500;
         if(data.result && !code) code = 200
         else if (!data.result && !code) code = 500
         else code = data.code;

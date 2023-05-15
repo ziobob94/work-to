@@ -1,34 +1,56 @@
 <!-- eslint-disable vue/no-use-v-if-with-v-for -->
 <template>
-    <div class="menu-container">
-        <div class="pi">
-            <img src>
-        </div>
+   <!--  <div class="navigator-container">
         
-        <h2 v-for="(link, index) in items" 
-            :key="link.name" 
-            @click="navigate(link.to)"
-            :ref="link.name"
+        <div v-for="(link) in items"  
+             :key="link.name"  
+             class="navigator-item"
+             :style="{
+                    display: (!link.conditional) ? 'flex' : this.checkVisibility(link)
+                }"
+             @click="navigate(link.to)"
+             :ref="link.name"
+        >
+            <i :class="link.icon"></i>
+            
+        </div>
+
+        <div  class="navigator-item"                 
+              :style="{
+                    display: (getAuthenticationStatus) ? 'flex' : 'none'
+              }"
+              @click="logoutHandle()"
+        > 
+            <i class="pi pi-home"></i>
+        </div>
+
+    </div> -->
+    <v-bottom-navigation :grow="true" v-model="value" color="primary">
+        <v-btn
+            v-for="item in items"
+            :key="item.route"
+            :to="item.route"
             :style="{
-                animationDelay: index*200+'ms',
-                display: (!link.conditional) ? 'flex' : this.checkVisibility(link)
-            }"
-            :class="[
-            'menu-link',
-            ( this.$route.path === link.to.path ) ? 'b-active' : ''
-            ]"
-            > {{link.label}} 
-        </h2>
-        <h2 class="menu-link"               
+                    display: (!item.conditional) ? 'inherit' : this.checkVisibility(item)
+                }"
+            exact
+            tile
+        >
+            {{ item.label }}
+        </v-btn>
+        <v-btn
             :style="{
-                animationDelay: 200+'ms',
-                display: (getAuthenticationStatus) ? 'flex' : 'none'
-            }"
-            @click="logoutHandle()">
-            Logout
-        </h2>
-</div>
-</template>
+                    display: (getAuthenticationStatus) ? 'inherit' : 'none'
+                }"
+            route="/logout"
+            exact
+            tile
+        >
+            {{ Logout }}
+        </v-btn>
+  </v-bottom-navigation>
+
+</template>            
 <script>
 import { mapGetters, mapState, mapMutations } from 'vuex';
 import Cookies from 'js-cookie';
@@ -46,39 +68,17 @@ export default {
                 label: 'Home',
                 icon: 'pi pi-fw pi-home',
                 to: {path: '/home', hash: '#home'},
+                route: "/home",
                 hash: 'home',
                 name: '/',
-                visible: true
-            },
-            {
-                label: 'About',
-                icon: 'pi pi-fw pi-calendar',
-                to: {path: '/about', hash:'#about'},
-                hash: 'about',
-                name: 'about',
-                visible: true
-            },
-            {
-                label: 'Curriculum',
-                icon: 'pi pi-fw pi-heart',
-                to: {path: '/life', hash: '#life'},
-                hash: 'life',
-                name: 'life',
-                visible: true
-            },
-            {
-                label: 'Skills',
-                icon: 'pi pi-fw pi-heart',
-                to: {path: '/skills', hash: '#skills'},
-                hash: 'skills',
-                name: 'skills',
-                visible: true
+                visible: true,
             },
             {
                 label: 'Login',
                 icon: 'pi pi-fw pi-heart',
                 to: {path: '/login', hash: '#login'},
                 hash: 'login',
+                route: '/login',
                 name: 'login',
                 visible: true,
                 conditional: true
@@ -88,6 +88,7 @@ export default {
                 icon: 'pi pi-fw pi-heart',
                 to: {path: '/signup', hash: '#signup'},
                 hash: 'signup',
+                route: '/signup',
                 name: 'signup',
                 visible: true,
                 conditional: true,
@@ -103,6 +104,7 @@ export default {
     },
     methods: {
         ...mapMutations(["setAuthenticated"]),
+
         navigate(to){
             this.$router.push(to);
         },
@@ -143,5 +145,19 @@ export default {
 
 <style lang="scss" >
 
+.navigator-item{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1 1 100%;
+    height: 100%;
+    & > i {
+        height: 100%;
+        font-size: 2rem;
+        text-align: center;
+        display: flex;
+        align-items: center;
+    }
+}
 
 </style>

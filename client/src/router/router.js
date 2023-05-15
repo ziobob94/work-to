@@ -1,12 +1,8 @@
 /* eslint-disable no-debugger */
-import AboutPageComponent from "../components/views/AboutPageComponent.vue";
 import HomePageComponent from "@/components/views/HomePageComponent.vue";
-import LifePageComponent from "@/components/views/LifePageComponent.vue";
-import SkillsComponent from "@/components/views/SkillsPageComponent.vue";
 import LoginComponent from "@/components/views/LoginPageComponent.vue";
 import SignupComponent from "@/components/views/SignupPageComponent.vue";
 import * as Router from 'vue-router';
-import configs from '@/assets/configs.json';
 import { instance } from "../main";
 import Cookies from 'js-cookie';
 
@@ -46,34 +42,7 @@ import Cookies from 'js-cookie';
                     path: '/home',
                     component: HomePageComponent,
                     meta: { transitionName: '' },
-                    props: {
-                        socialButtons: configs.socialButtons
-                    }
-                },
-                {
-                    name: 'about',
-                    hash: '#about',
-                    path: '/about',
-                    component: AboutPageComponent,
-                    meta: { transitionName: '' },
-                },
-                {
-                    name: 'life',
-                    hash: '#life',
-                    path: '/life',
-                    component:LifePageComponent,
-                    meta: { transitionName: '' },
-                },
-                {
-                    name: 'skills',
-                    hash: '#skills',
-                    path: '/skills',
-                    component:SkillsComponent,
-                    meta: { transitionName: '' },
-                    props: {
-                        logosList: configs.logosList
-                    }
-                },
+                }
             ]
         },
         {
@@ -91,8 +60,11 @@ import Cookies from 'js-cookie';
             meta: { transitionName: '' }
         }
     ]
+
+
+    const i = routes.findIndex((el) => el.name === 'index');
     
-    routes[0].children.forEach((element) => {
+    routes[i].children.forEach((element) => {
                     // eslint-disable-next-line no-unused-vars
         element.beforeEnter = async (to, from, next) => {
 
@@ -123,7 +95,7 @@ import Cookies from 'js-cookie';
 
             if(isAuth)  next();
             else {
-                window.alert("PLEASE LOG IN TO ACCESS")
+               // window.alert("PLEASE LOG IN TO ACCESS")
                 //debugger
                 next({name: "login"});
             }

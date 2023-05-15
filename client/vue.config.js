@@ -1,4 +1,5 @@
 const { defineConfig } = require('@vue/cli-service')
+const { VuetifyPlugin } = require('webpack-plugin-vuetify')
 
 module.exports = defineConfig({
   transpileDependencies: true,
@@ -17,5 +18,10 @@ module.exports = defineConfig({
         },
       },
     },
+  },
+  configureWebpack: {
+    plugins: [
+      new VuetifyPlugin({ autoImport: true }), // Enabled by default
+    ]
   }
 })
