@@ -2,6 +2,7 @@
 import HomePageComponent from "@/components/views/HomePageComponent.vue";
 import LoginComponent from "@/components/views/LoginPageComponent.vue";
 import SignupComponent from "@/components/views/SignupPageComponent.vue";
+import PermissionsComponent from "@/components/views/PermissionsPageComponent.vue";
 import * as Router from 'vue-router';
 import { instance } from "../main";
 import Cookies from 'js-cookie';
@@ -58,7 +59,14 @@ import Cookies from 'js-cookie';
             path: '/signup',
             component: SignupComponent,
             meta: { transitionName: '' }
-        }
+        },
+        {
+            name: 'permissions',
+            hash: '#permissions',
+            path: '/admin/permissions',
+            component: PermissionsComponent,
+            meta: { transitionName: '' }
+        },
     ]
 
 

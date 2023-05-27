@@ -1,5 +1,9 @@
 import { ApiReturn } from "./types";
 
+export function sleep(ms: number) {
+    return new Promise((resolve) => setTimeout(() => resolve, ms ))
+}
+
 export function normalizeResponse( res: any, data: ApiReturn, key: string ): { [key: string]: ApiReturn} {
     try{   
         let code = 500;

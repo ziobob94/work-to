@@ -29,7 +29,7 @@
             ></v-text-field>
             
             <v-checkbox
-                v-model="terms"
+                v-model="loginData.remember"
                 color="secondary"
                 label="Remeber Me"
             ></v-checkbox>
@@ -43,7 +43,7 @@
             
             <v-btn @click="handleSubmit" color="success">
                 Login
-                <v-icon icon="mdi-chevron-right" end></v-icon>
+                <v-icon icon="fa-chevron-right" end></v-icon>
             </v-btn>
         </v-card-actions>
     </v-card>
@@ -83,31 +83,29 @@ export default {
                 // // console.log("[LoginFormComponent] DATA: ", this.loginData, `\n THIS:`, this.$);
                 
                 const logged = await this.handleLoginAPI( this.loginData );
-                
-                this.logged = !!logged;
-                
+                                
                 // // console.log("[LoginFormComponent] LOGGED: ", logged);
+                // eslint-disable-next-line no-debugger
+                debugger;
                 
-                const loggedUser = (logged?.data);
-                
-                if(loggedUser){
-                    swalOpt.title = (loggedUser.result) ? "User Logged" : "Login Fails";
-                    swalOpt.text = loggedUser.message;
-                    swalOpt.icon = (loggedUser.result) ? "success" : "error";
-                    
-                    /*                     if(loggedUser.result){
-                        Cookies.set("auth", loggedUser.data, {expires: 1 });
-                        this.$http.defaults.headers.common.Authorization = 'Bearer ' + loggedUser.data // Replace with your authorization token
-                        this.setAuthenticated(true);
-                    } */
+                if(logged.result){
+                    swalOpt.title = (logged.result) ? "User Logged" : "Login Fails";
+                    swalOpt.text = logged.message;
+                    swalOpt.icon = (logged.result) ? "success" : "error";
+
                     
                 }
+
                 await this.$swal.fire(swalOpt);
+
+
+                if(logged.result) {
+                    this.$router.push({ name: "home" });
+                }
+
+                return logged.data;
                 
-                // eslint-disable-next-line no-debugger
-                // debugger;
-                if(loggedUser.data) this.$router.push({ path: "/home" });
-                
+            
             }
             catch(err){
                 console.error("[SignupFormComponent] ERROR: ", err);

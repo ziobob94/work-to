@@ -1,17 +1,42 @@
-import { MongoMangerClass } from "../../classes/MongoManagerClass";
 // import passport from "../../passport";
-import { Express } from "express";
+import express, { Router } from "express";
 import dotenv from 'dotenv';
-import { registrationHandler, loginHandler, validateHandler, logoutHandler } from "../controllers/auth";
 import passport from "passport";
+import { mdb } from "../../lib/Server";
+import { registrationHandler, loginHandler, validateHandler, logoutHandler } from "../../controllers/main/authenticationController";
 dotenv.config();
 
 
+const autheticationRouter: Router = express.Router();
+
+autheticationRouter.post('/login',
+    loginHandler
+);
 
 
-export function bindAuthRoutes(app: Express, db: MongoMangerClass) {
+autheticationRouter.get('/logout', 
+    logoutHandler
+);
+
+
+
+autheticationRouter.post('/register', 
+    (req, res) => {
+        registrationHandler(req,res,mdb)
+    }
+);
+
+
+autheticationRouter.get('/validate-token', 
+    passport.authenticate('jwt', {session: false}),
+    validateHandler
+)
+
+export default autheticationRouter;
+
+/* export function bindAuthenticationRoutes(app: Express, db: MongoMangerClass) {
     
-    try {    
+    try {  */   
         
         /*         app.get('/auth/facebook', passport.authenticate('facebook'));
         
@@ -27,9 +52,8 @@ export function bindAuthRoutes(app: Express, db: MongoMangerClass) {
             failureRedirect: '/login'
         }));
         */
-        
+ /*        
         app.post('/login',
-            /* passport.authenticate('jwt', {session: false}), */
             loginHandler
         );
         
@@ -56,4 +80,5 @@ export function bindAuthRoutes(app: Express, db: MongoMangerClass) {
         console.error("[routes.auth.bindAuthRoutes] ERROR: ", err);
     }    
     
-}
+} */
+

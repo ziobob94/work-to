@@ -4,6 +4,7 @@
   "description": "Server for work to",
   "main": "src/main.ts",
   "scripts": {
+    "start:inspect": "nodemon --exec \"node --require ts-node/register --inspect src/index.ts\"",
     "start": "node dist/index.js",
     "dev": "nodemon src/index.ts"
   },

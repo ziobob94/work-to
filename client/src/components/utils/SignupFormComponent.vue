@@ -55,7 +55,7 @@
             ></v-text-field>
             
             <v-checkbox
-                v-model="terms"
+                v-model="signupData.terms"
                 color="secondary"
                 label="I agree to site terms and conditions"
             ></v-checkbox>
@@ -69,7 +69,7 @@
             <v-btn @click="handleSubmit" color="success">
                 Complete Registration
                 
-                <v-icon icon="mdi-chevron-right" end></v-icon>
+                <v-icon icon="fa-chevron-right" end></v-icon>
             </v-btn>
         </v-card-actions>
     </v-card>
@@ -129,7 +129,7 @@ export default {
                 
                 await this.$swal.fire(swalOpt);
                 
-                if(userLogged.result) this.$router.push({path: "/home"})
+                if(userLogged) this.$router.push({path: "/home"})
                 
             }
             catch(err){

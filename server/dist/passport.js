@@ -75,6 +75,6 @@ passport_1.default.use(new passport_jwt_1.Strategy(jwtOptions, (payload, done) =
         return done(err, false);
     }
 })));
-console.log("[passport] STRATEGIES CONFIGURATED");
+console.log("[passport] CONFIGURE STRATEGIES DONE ");
 exports.default = passport_1.default;
 //# sourceMappingURL=passport.js.map

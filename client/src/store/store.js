@@ -28,14 +28,15 @@ const store = createStore({
               instance.defaults.headers.common.Authorization = 'Bearer ' + logged.data.data // Replace with your authorization token
               commit("setAuthenticated", true);
           }
+          return logged.data;
+
       }
       catch(err){
           console.error("[SignupFormComponent] ERROR: ", err);
           // eslint-disable-next-line no-debugger
           //debugger;
-          logged = null
+          return {result: false, message: "Login Failed", error: err}
       }
-      return logged;
     },
 
 

@@ -23,9 +23,23 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserModel = void 0;
+exports.PermissionModel = exports.RoleModel = exports.UserModel = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
 const userSchema = new mongoose_1.Schema({
+    first: {
+        type: String,
+        required: false,
+        trim: false,
+    },
+    last: {
+        type: String,
+        required: false,
+        trim: false,
+    },
+    termsAccepted: {
+        type: Boolean,
+        required: false
+    },
     email: {
         type: String,
         required: true,
@@ -68,6 +82,47 @@ const userSchema = new mongoose_1.Schema({
             message: 'Password must contain at least one uppercase letter, one lowercase letter, one symbol, and one number',
         },
     },
+    roleID: {
+        type: String,
+        required: true,
+        trim: false,
+    }
+}, { timestamps: true });
+const roleSchema = new mongoose_1.Schema({
+    name: {
+        type: String,
+        required: true,
+        trim: false,
+    },
+    role: {
+        type: String,
+        required: true,
+        trim: false
+    }
+});
+const permissionSchema = new mongoose_1.Schema({
+    name: {
+        type: String,
+        required: true,
+        trim: false,
+    },
+    descrtiption: {
+        type: String,
+        required: false,
+        trim: false
+    },
+    slug: {
+        type: String,
+        required: true,
+        trim: false
+    },
+    roleID: {
+        type: String,
+        required: true,
+        trim: false
+    }
 });
 exports.UserModel = mongoose_1.default.model('User', userSchema);
+exports.RoleModel = mongoose_1.default.model('Role', roleSchema);
+exports.PermissionModel = mongoose_1.default.model('Permission', permissionSchema);
 //# sourceMappingURL=databaseModels.js.map

@@ -1,6 +1,7 @@
 <template>
-  <v-app class="main-container">
-      <div class="body-wrapper">
+  <v-app class="w-100">
+    <TheHeaderComponent/>
+    <div class="body-wrapper">
           <router-view v-slot="{ Component }">
               <!-- Use any custom transition and  to `fade` -->
               <!-- <transition name="moveUp" mode="out-in" > -->
@@ -20,12 +21,15 @@ import TheNavigatorComponent from './components/layout/TheNavigatorComponent.vue
 import "./assets/main.scss";
 import "./assets/animations.scss";
 import "./assets/transitions.scss";
+import TheHeaderComponent from './components/layout/TheHeaderComponent.vue';
 
 export default {
   name: 'App',
   components: {
     TheFooterComponent,
-    TheNavigatorComponent
+    TheNavigatorComponent,
+    TheHeaderComponent
+
 },
   data(){
       return{

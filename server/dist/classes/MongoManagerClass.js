@@ -17,16 +17,11 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const connect_mongo_1 = __importDefault(require("connect-mongo"));
 const databaseModels_1 = require("../databaseModels");
+const utils_1 = require("../utils");
 class MongoMangerClass {
     constructor() {
         this.mongoStore = null;
-        this.connect()
-            .then((res) => {
-            return res;
-        })
-            .catch(() => {
-            return null;
-        });
+        this.db = null;
     }
     insertUser(user) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -42,7 +37,7 @@ class MongoMangerClass {
                     return { result: true, message: "User created successfully", code: 200 };
                 }
                 else
-                    return null;
+                    return { result: false, message: "User creation failed", code: 401 };
             }
             catch (error) {
                 console.error('Error creating user:', error);
@@ -55,10 +50,20 @@ class MongoMangerClass {
             try {
                 dotenv_1.default.config();
                 const mongoURI = process.env.MDB_URI + "/" + process.env.MDB_DATABASE;
-                const db = yield mongoose_1.default.connect(mongoURI);
+                while (!this.db) {
+                    try {
+                        console.log("[MongoManagerClass.connect] TRY TO CONNECTING TO MONGODB");
+                        this.db = yield mongoose_1.default.connect(mongoURI);
+                    }
+                    catch (err) {
+                        console.warn("[MongoManagerClass.connect] ERROR CONNECTING TO MONGODB: ", err.message);
+                        this.db = null;
+                        (0, utils_1.sleep)(5000);
+                    }
+                }
                 this.mongoStore = connect_mongo_1.default.create({ mongoUrl: mongoURI });
-                console.log("[MongoMangerClass.connect] DATABASE CONNECTION RESULT: ", !!db);
-                return db;
+                console.log("[MongoMangerClass.connect] DATABASE CONNECTION: ", !!this.db);
+                return !!this.db;
             }
             catch (err) {
                 console.error("[SERVER][ServerClass.run] ERROR: ", err);

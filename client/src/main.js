@@ -12,10 +12,14 @@ import 'primeicons/primeicons.css';
 import Dock from 'p      mdi,
 rimevue/dock'; */
 import 'vuetify/styles'
+import 'font-awesome/css/font-awesome.min.css' // Ensure your project is capable of handling css files
 import { createVuetify } from 'vuetify'
-import { aliases, fa } from 'vuetify/iconsets/fa'
+import { aliases, fa } from 'vuetify/iconsets/fa4'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { fas } from '@fortawesome/free-solid-svg-icons'
 
 const vuetify = createVuetify({
   components,
@@ -39,6 +43,8 @@ export const instance = axios.create({
 // eslint-disable-next-line no-unused-vars
 const app = createApp(App)
 
+app.component('font-awesome-icon', FontAwesomeIcon) // Register component globally
+library.add(fas)
 app.use(store);
 router.store = store;
 app.use(router);

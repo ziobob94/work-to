@@ -1,8 +1,9 @@
 import bcrypt from 'bcryptjs';
 import jwt from "jsonwebtoken";
-import { UserModel } from "../../databaseModels";
+import { IUser, UserModel } from "../../databaseModels";
 import { ApiReturn } from '../../types';
-import { MongoMangerClass } from '../../classes/MongoManagerClass';
+import { MongoMangerClass } from '../../lib/MongoManagerClass';
+import { insertUser } from '../../models/userModel';
 
 
 async function loginHelper(req: any) : Promise<ApiReturn> {
@@ -43,14 +44,6 @@ async function loginHelper(req: any) : Promise<ApiReturn> {
     }
 }
 
-export async function loginHandler (req: any, res: any){
-    const logRes: ApiReturn = await loginHelper(req); 
-    res.json(logRes);
-}
-
-
-
-
 
 async function hashPassword(password: string): Promise<string> {
     const salt = bcrypt.genSaltSync(10); 
@@ -58,24 +51,27 @@ async function hashPassword(password: string): Promise<string> {
     return hashedPassword
 }
 
+
 async function registerHelper(req: any, res: any, db: MongoMangerClass): Promise<ApiReturn>{
     console.log("[routes.auth.bindAuthRoutes] ROURTE -> /regiter");
     
     let userInserted : ApiReturn = {result: false, message: "Signup Failed", code: 500 };
     
     try {
-        const user: any = req.body;
+        const user: IUser = req.body;
         
-        if(!user || !Object.keys(user).length) {
+        if(!user || Object.keys(user).length === 0 ) {
             res.statusCode = 409;
             res.statusMessage = "REQUEST_FOR_EMPTY_USER";
-            userInserted.message = "Missing data"
+            userInserted.message = "Missing data";
             return userInserted;
         }
         
         user.password = await hashPassword(user.password);
+
+        user.roleID = 'user';
         
-        userInserted = await db.insertUser(user);
+        userInserted = await insertUser(user);
     }
     catch(err){
         console.error("[auth.registerHelper] ERROR: ", err)
@@ -85,16 +81,8 @@ async function registerHelper(req: any, res: any, db: MongoMangerClass): Promise
     return userInserted; 
 }
 
-export async function registrationHandler (req: any,res: any, db: MongoMangerClass) {
-    const regRes : ApiReturn = await registerHelper(req, res, db);
-    res.json(regRes)
-}
 
-
-
-
-
-async function tokenValidationHandler(req: any): Promise<ApiReturn> {
+export async function tokenValidationHandler(req: any): Promise<ApiReturn> {
     const ret : ApiReturn = {
         result: true,
         message: "ok",
@@ -102,6 +90,16 @@ async function tokenValidationHandler(req: any): Promise<ApiReturn> {
     }
     return ret;
     
+}
+
+export async function registrationHandler (req: any,res: any, db: MongoMangerClass) {
+    const regRes : ApiReturn = await registerHelper(req, res, db);
+    res.json(regRes)
+}
+
+export async function loginHandler (req: any, res: any){
+    const logRes: ApiReturn = await loginHelper(req); 
+    res.json(logRes);
 }
 
 export async function validateHandler (req: any,res: any) {
@@ -121,9 +119,6 @@ export async function validateHandler (req: any,res: any) {
 }
 
 
-
-
-
 export async function logoutHandler(req, res) {
     const response : ApiReturn = {
         result: false,
@@ -141,3 +136,6 @@ export async function logoutHandler(req, res) {
 
     res.json(response);
 }
+
+
+

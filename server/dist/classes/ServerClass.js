@@ -18,8 +18,9 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const cors_1 = __importDefault(require("cors"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const MongoManagerClass_1 = require("./MongoManagerClass");
-const auth_1 = require("../router/routes/auth");
-const passport_1 = __importDefault(require("../passport/passport"));
+const authenticationRoutes_1 = require("../router/routes/authenticationRoutes");
+const authorizationRoutes_1 = require("../router/routes/authorizationRoutes");
+const passportSet_1 = __importDefault(require("../passport/passportSet"));
 class ServerClass {
     constructor() {
         this.mdb = new MongoManagerClass_1.MongoMangerClass();
@@ -36,7 +37,8 @@ class ServerClass {
         console.log("[serverClass.setMiddlewares] SUCCESS");
     }
     setRoutes() {
-        (0, auth_1.bindAuthRoutes)(this.server, this.mdb);
+        (0, authenticationRoutes_1.bindAuthenticationRoutes)(this.server, this.mdb);
+        (0, authorizationRoutes_1.bindAuthorizationRoutes)(this.server, this.mdb);
         this.server.use((err, req, res, next) => {
             res.status(500).json({ error: err.message });
         });
@@ -63,7 +65,7 @@ class ServerClass {
                 server.use(corsInstance);
                 server.use(body_parser_1.default.json());
                 this.server = server;
-                this.server.use(passport_1.default.initialize());
+                this.server.use(passportSet_1.default.initialize());
                 this.setMiddlewares();
                 this.setRoutes();
                 server.listen(port);
@@ -78,7 +80,8 @@ class ServerClass {
     }
     run() {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!this.mdb)
+            const connected = yield this.mdb.connect();
+            if (connected)
                 return null;
             return yield this.init();
         });

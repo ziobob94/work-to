@@ -29,7 +29,7 @@ passport.deserializeUser<any, any>((id, done) => {
 });
 
 
-console.log("[passport] STRATEGIES CONFIGURATED");
+console.log("[passport] CONFIGURE STRATEGIES DONE ");
 
 
 export default passport;

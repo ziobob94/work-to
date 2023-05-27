@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/no-use-v-if-with-v-for -->
 <template>
 
-    <v-bottom-navigation :grow="true" v-model="value" color="primary">
+    <v-bottom-navigation :grow="true"  color="primary">
         <v-btn
             v-for="item in items"
             :key="item.route"
@@ -34,7 +34,7 @@ import Cookies from 'js-cookie';
 
 
 export default {
-    name: "TheMenuComponent",
+    name: "TheNavigatorComponent",
     components: {
     },
     data() {
