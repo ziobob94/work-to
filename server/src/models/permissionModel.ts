@@ -1,5 +1,5 @@
 import { ApiReturn } from "../types";
-import { PermissionModel } from "../databaseModels";
+import { IPermission, PermissionModel } from "../databaseModels";
 
 export async function insertPermission(permission) : Promise<ApiReturn> {
 
@@ -21,17 +21,57 @@ export async function insertPermission(permission) : Promise<ApiReturn> {
 export async function getAllPermission() : Promise<ApiReturn> {
 
     try {
-        const columns = await PermissionModel.find({}).distinct('name');
         const values = await PermissionModel.find({});
-        if (columns && values) {
+        if (values) {
             console.log('Permissions got');
-            return {result: true, message: "Permissions got successfully", code: 200, data: {columns, values}};
+            return {result: true, message: "Permissions got successfully", code: 200, data: values};
         }
         else return {result: false, message: "Permissions get failed", code: 401};
     }
     
     catch(error: any) {
         console.error('Error getting all permissions: ', error);
+        return {result: false, message: error.message, code: 401};
+    }
+}
+export async function deletePermission(id: any) : Promise<ApiReturn> {
+
+    try {
+        const values = await PermissionModel.findOneAndDelete({_id: id});
+        if (values) {
+            console.log('Permissions deleted');
+            return {result: true, message: "Permissions deleted successfully", code: 200, data: values};
+        }
+        else return {result: false, message: "Permissions delete failed", code: 401};
+    }
+    
+    catch(error: any) {
+        console.error('Error deleteing permission: ', error);
+        return {result: false, message: error.message, code: 401};
+    }
+}
+
+
+
+export async function updatePermission(permission: IPermission) : Promise<ApiReturn> {
+
+    try {
+        const updated = await PermissionModel.findOneAndUpdate({_id: permission._id}, {
+            name: permission.name,           
+            slug: permission.slug,
+            descrtiption: permission.descrtiption,
+            rolesIDS: permission.rolesIDS
+
+        });
+        if (updated) {
+            console.log('Permission created successfully: ', permission);
+            return {result: true, message: "User created successfully", code: 200};
+        }
+        else return {result: false, message: "User creation failed", code: 401};
+    }
+    
+    catch(error: any) {
+        console.error('Error creating permission: ', error);
         return {result: false, message: error.message, code: 401};
     }
 }

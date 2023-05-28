@@ -99,7 +99,6 @@ const roleSchema = new Schema<IRole>({
   }
 });
 
-
 export interface IPermission extends Document {
   name: string,
   descrtiption?: string,

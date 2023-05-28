@@ -5,12 +5,6 @@ import axios from 'axios';
 import VueSweetalert2 from 'vue-sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 import store from './store/store';
-/* import PrimeVue from 'primevue/config';
-import "primevue/resources/primevue.min.css";
-import "primevue/resources/themes/lara-light-indigo/theme.css";    
-import 'primeicons/primeicons.css';
-import Dock from 'p      mdi,
-rimevue/dock'; */
 import 'vuetify/styles'
 import 'font-awesome/css/font-awesome.min.css' // Ensure your project is capable of handling css files
 import { createVuetify } from 'vuetify'

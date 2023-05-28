@@ -21,11 +21,10 @@ export async function insertRole(role) : Promise<ApiReturn> {
 export async function getAllRole() : Promise<ApiReturn> {
 
     try {
-        const columns = await RoleModel.find({}).distinct('name');
         const values = await RoleModel.find({});
-        if (columns && values) {
+        if (values) {
             console.log('Roles got');
-            return {result: true, message: "Roles got successfully", code: 200, data: {columns, values}};
+            return {result: true, message: "Roles got successfully", code: 200, data: values};
         }
         else return {result: false, message: "Roles get failed", code: 401};
     }

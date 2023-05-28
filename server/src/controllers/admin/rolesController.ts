@@ -49,7 +49,7 @@ export async function createRoles( req: any, res: any): Promise<ApiReturn>{
     return resp;
 }
 
-export async function getAllRolesHandler(req, res){
+export async function getAllRolesCallback(req, res){
     let resp : ApiReturn = {
         result: false,
         message: "Read all role ",
@@ -71,6 +71,7 @@ export async function readRoles(rolesSlugs: string[], roleID = ""){
     }
     return resp;
 }
+
 export async function updateRoles(roles: IRole[]){
     const resp : ApiReturn = {
         result: false,
@@ -79,6 +80,7 @@ export async function updateRoles(roles: IRole[]){
     }
     return resp;
 }
+
 export async function deleteRoles(){
     const resp : ApiReturn = {
         result: false,

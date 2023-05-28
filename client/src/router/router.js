@@ -6,7 +6,7 @@ import PermissionsComponent from "@/components/views/PermissionsPageComponent.vu
 import * as Router from 'vue-router';
 import { instance } from "../main";
 import Cookies from 'js-cookie';
-
+import Swal from "sweetalert2";
     
     const verifyToken = async () => {
         let isValid = false
@@ -25,13 +25,35 @@ import Cookies from 'js-cookie';
         const isAuthenticated = await verifyToken();
         if ( !isAuthenticated && to.name !== 'Login' ) {
                 // redirect the user to the login page
+                await Swal.fire({    
+                    text: 'Do login or signup',
+                    icon: 'warning',
+                    showCancelButton: false,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'OK',
+                    }
+                );
+    
+                router.push({name: 'login'})
                 return false
         }
         return true;
         
     }
 
-    const routes = [    
+
+    const adminRoutes = [
+        {
+            name: 'permissions',
+            hash: '#permissions',
+            path: '/admin/permissions',
+            component: PermissionsComponent,
+            meta: { transitionName: '' }
+        }
+    ];
+
+    const openRoutes = [
         {
             path: '/',
             redirect: '/home',
@@ -43,7 +65,8 @@ import Cookies from 'js-cookie';
                     path: '/home',
                     component: HomePageComponent,
                     meta: { transitionName: '' },
-                }
+                },
+                
             ]
         },
         {
@@ -59,20 +82,22 @@ import Cookies from 'js-cookie';
             path: '/signup',
             component: SignupComponent,
             meta: { transitionName: '' }
-        },
+        }
+    ];
+
+    const protectedRoutes = [
         {
-            name: 'permissions',
-            hash: '#permissions',
-            path: '/admin/permissions',
-            component: PermissionsComponent,
+            name: 'profile',
+            hash: '#profile',
+            path: '/profile/:id',
+            component: ProfileComponent,
             meta: { transitionName: '' }
-        },
-    ]
+        }
+    ];
 
 
-    const i = routes.findIndex((el) => el.name === 'index');
     
-    routes[i].children.forEach((element) => {
+    protectedRoutes.forEach((element) => {
                     // eslint-disable-next-line no-unused-vars
         element.beforeEnter = async (to, from, next) => {
 
@@ -105,6 +130,7 @@ import Cookies from 'js-cookie';
             else {
                // window.alert("PLEASE LOG IN TO ACCESS")
                 //debugger
+                
                 next({name: "login"});
             }
 
@@ -116,16 +142,10 @@ import Cookies from 'js-cookie';
     export const router = Router.createRouter({
         // 4. Provide the history implementation to use. We are using the hash history for simplicity here.
         history: Router.createWebHistory(),
-        routes,
+        routes: [openRoutes, protectedRoutes, adminRoutes],
         mode: "hash"
     })
     
-    // eslint-disable-next-line no-unused-vars
-    /*router.afterEach((to, from) => {
-        const toDepth = to.path.split('/').length
-        const fromDepth = from.path.split('/').length
-        to.meta.transition = toDepth < fromDepth ? 'moveUp' : 'moveUp'
-    })*/
  
     
     export default router;

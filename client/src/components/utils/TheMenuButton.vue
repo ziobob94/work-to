@@ -10,7 +10,7 @@
                 v-for="(item, index) in items"
                 :key="index"
                 :value="index"
-                class="w-100"
+                model     class="w-100"
                 @click="goTo(item.name)"
                 >
                 <v-list-item-title>{{ item.title }}</v-list-item-title>

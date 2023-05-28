@@ -1,5 +1,5 @@
 <template>
-    <div id="permissions" class="body-container" >
+    <div id="permissions" class="w-100 h-100 d-flex align-start" >
         <PermissionsComponent/>
     </div>
 </template>
