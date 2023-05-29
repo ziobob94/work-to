@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
 import jwt from "jsonwebtoken";
-import { IUser, UserModel } from "../../databaseModels";
+import { IUser, PermissionModel, UserModel } from "../../databaseModels";
 import { ApiReturn } from '../../types';
 import { MongoMangerClass } from '../../lib/MongoManagerClass';
 import { insertUser } from '../../models/userModel';
@@ -34,6 +34,8 @@ async function loginHelper(req: any) : Promise<ApiReturn> {
         
         // Sign the JWT with the secret key and set an expiration time
         const token: string = jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: '1h' });
+        
+        let permissions = await getUserPermissions()
         
         // Send the token as the response
         return {result: true, code: 200,  message: 'Ok', data: token };
@@ -99,6 +101,8 @@ export async function registrationHandler (req: any,res: any, db: MongoMangerCla
 
 export async function loginHandler (req: any, res: any){
     const logRes: ApiReturn = await loginHelper(req); 
+ 
+      
     res.json(logRes);
 }
 
@@ -110,6 +114,7 @@ export async function validateHandler (req: any,res: any) {
     }
     try{
         response = await tokenValidationHandler(req);
+        if(req?.user) response.data = req.user;
     }
     catch(err){
         console.error("[auth.validateHandler] ERROR: ", err);

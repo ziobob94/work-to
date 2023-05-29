@@ -318,7 +318,7 @@ export default {
 
         async editPermission(){
             // eslint-disable-next-line no-debugger
-            debugger
+            // debugger
             const swalOpt = {
                     title: "Fail",
                     text: "Edit Permission ",

@@ -1,36 +1,21 @@
 <!-- eslint-disable vue/no-use-v-if-with-v-for -->
 <template>
-
     <v-bottom-navigation :grow="true"  color="primary">
         <v-btn
-            v-for="item in items"
+            v-for="item in ((!isAuthenticated) ? itemsLogged : itemsOut)"
             :key="item.route"
             :to="item.route"
-            :style="{
-                    display: (!item.conditional) ? 'inherit' : this.checkVisibility(item)
-                }"
+            @click="item.click"
             exact
             tile
-        >
-            {{ item.label }}
-        </v-btn>
-        <v-btn
-            :style="{
-                    display: (getAuthenticationStatus) ? 'inherit' : 'none'
-                }"
-            route="/logout"
-            exact
-            @click="logoutHandle"
-            tile
-        >
-            Logout
+            >
+            {{  item.label }}
         </v-btn>
   </v-bottom-navigation>
 
 </template>            
 <script>
-import { mapGetters, mapState, mapMutations } from 'vuex';
-import Cookies from 'js-cookie';
+import { mapGetters, mapState, mapMutations, mapActions } from 'vuex';
 
 
 export default {
@@ -39,8 +24,9 @@ export default {
     },
     data() {
         return {
+            isLogged: false,
             active: '',
-            items: [
+            itemsLogged: [
             {
                 label: 'Home',
                 icon: 'pi pi-fw pi-home',
@@ -57,8 +43,7 @@ export default {
                 hash: 'login',
                 route: '/login',
                 name: 'login',
-                visible: true,
-                conditional: true
+                visible: false,
             },
             {
                 label: 'Signup',
@@ -67,20 +52,40 @@ export default {
                 hash: 'signup',
                 route: '/signup',
                 name: 'signup',
-                visible: true,
-                conditional: true,
-            },
+                visible: false,
+            }
             ],
+            itemsOut: [
+               {
+                label: 'Home',
+                icon: 'pi pi-fw pi-home',
+                to: {path: '/home', hash: '#home'},
+                route: "/home",
+                hash: 'home',
+                name: '/',
+                visible: true,
+            }
+,        
+            {
+                label: 'Logout',
+                icon: 'pi pi-fw pi-heart',
+                name: 'logout',
+                visible: false,
+                click: this.logoutHandle
+            },
+            ]
         }
-    },
-    mounted() {
     },
     computed:{
         ...mapState(["isAuthenticated"]),
-        ...mapGetters(["getAuthenticationStatus"])
+        ...mapGetters(["getAuthenticationStatus", "getUser"])
+    },
+    mounted(){
+        this.isLogged = this.isAuthenticated;
     },
     methods: {
         ...mapMutations(["setAuthenticated"]),
+        ...mapActions(["handleLogoutAPI", "verifyToken"]),
 
         navigate(to){
             this.$router.push(to);
@@ -94,26 +99,20 @@ export default {
                 confirmButtonText: "Ok"
             }
             try{
-                const outResp = await this.$http.get("/api/logout");
+                const outResp = await this.handleLogoutAPI()
                 // // console.log("[TheMenuComponent.logutHandle]", outResp.data);
                 if(outResp.data.result){
                     swalOpt.title = "Success";
                     swalOpt.text = "Logout Ok";
                     swalOpt.icon = "success";
-                    Cookies.remove("auth");
-                    this.$http.defaults.headers.common.Authorization = "";
-                    this.setAuthenticated(false);
-                    this.$router.push({path: "/login"})
+                    this.navigate({name: "home"})
                 }
             }
             catch(err){
-                console.error("[TheMenuComponent.logutHandle]", err)
+                console.error("[TheMenuComponent.logutHandle]", err);
             }
             this.$swal.fire(swalOpt);
-        },
-        checkVisibility(link){
-            link.visible = !this.getAuthenticationStatus;
-            return (this.getAuthenticationStatus) ? 'none' : 'flex'
+        
         }
         
     }

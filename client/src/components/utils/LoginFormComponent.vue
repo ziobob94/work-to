@@ -86,7 +86,7 @@ export default {
                                 
                 // // console.log("[LoginFormComponent] LOGGED: ", logged);
                 // eslint-disable-next-line no-debugger
-                debugger;
+                // debugger;
                 
                 if(logged.result){
                     swalOpt.title = (logged.result) ? "User Logged" : "Login Fails";
@@ -112,22 +112,6 @@ export default {
                 // eslint-disable-next-line no-debugger
                 //debugger;
                 this.$swal.fire(swalOpt)
-                
-            }
-        },
-        async trySub(){
-            try{ 
-                // eslint-disable-next-line no-debugger
-                // debugger;
-                
-                // console.log("[LoginFormComponent] DATA: ", this.loginData);
-                await this.$http.get("/api/profile-data");
-                // console.log("[LoginFormComponent] DATA: ", logged);
-            }
-            catch(err){
-                console.error("[SignupFormComponent] ERROR: ", err);
-                // eslint-disable-next-line no-debugger
-                //debugger;
                 
             }
         }

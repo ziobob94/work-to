@@ -96,7 +96,7 @@ export default {
         }
     },
     methods:{
-        ...mapActions(["handleLoginAPI"]),
+        ...mapActions(["handleLoginAPI","handleSignupAPI"]),
         async handleSubmit(ev){
             const swalOpt = {
                 title: "Fail",
@@ -111,10 +111,9 @@ export default {
                 // debugger;
                 
                 // console.log("[SignupFormComponent] DATA: ", this.signupData);
-                const logged = await this.$http.post("/api/register",this.signupData );
+                const logged = await this.handleSignupAPI(this.signupData);
                 // eslint-disable-next-line no-debugger
                 //debugger;
-                this.logged = !!logged;
                 // console.log("[SignupFormComponent] LOGGED: ", logged);
                 const userInserted = (logged?.data);
                 let userLogged = false;

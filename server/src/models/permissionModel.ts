@@ -34,6 +34,7 @@ export async function getAllPermission() : Promise<ApiReturn> {
         return {result: false, message: error.message, code: 401};
     }
 }
+
 export async function deletePermission(id: any) : Promise<ApiReturn> {
 
     try {
@@ -50,8 +51,6 @@ export async function deletePermission(id: any) : Promise<ApiReturn> {
         return {result: false, message: error.message, code: 401};
     }
 }
-
-
 
 export async function updatePermission(permission: IPermission) : Promise<ApiReturn> {
 
@@ -75,3 +74,40 @@ export async function updatePermission(permission: IPermission) : Promise<ApiRet
         return {result: false, message: error.message, code: 401};
     }
 }
+
+export async function getUserPermissions(userRole: IPermission) : Promise<ApiReturn> {
+
+    try {
+        //TODO: qui
+        const permissions = await PermissionModel.aggregate([
+            {
+              '$match': {
+                '_id': new ObjectId('6471f82726952cc7fce06bfc')
+              }
+            }, {
+              '$lookup': {
+                'from': 'permissions', 
+                'localField': 'role', 
+                'foreignField': 'roleID', 
+                'as': 'result'
+              }
+            }, {
+              '$project': {
+                'result': '$result'
+              }
+            }
+          ]); 
+        if (permissions) {
+            console.log('User permission successfully: ', permissions);
+            return {result: true, message: "User created successfully", code: 200, data: permissions};
+        }
+        else return {result: false, message: "User creation failed", code: 401};
+    }
+    
+    catch(error: any) {
+        console.error('Error creating permission: ', error);
+        return {result: false, message: error.message, code: 401};
+    }
+}
+
+

@@ -2,12 +2,23 @@ import express, { Router } from "express";
 // import { checkPermission } from "../../middlewares/authorizationMiddleware";
 import { createPermissions, getAllPermissionsCallback, deletePermissionCallback, updatePermissionCallback } from "../../controllers/admin/permissionsController";
 import { createRoles, getAllRolesCallback } from "../../controllers/admin/rolesController";
+import passport from "passport";
+import { ApiReturn } from "src/types";
 
 const adminRouter : Router = express.Router();
 
-adminRouter.use("/admin", (req, res, next) => {
-    console.log("CIAO");
-    next();
+
+adminRouter.use("/admin", passport.authenticate('jwt', {session: false}),
+    (req: any, res, next) => {
+        // console.log("CIAO", req);
+
+        if(req.isAuthenticated() && req.user.roleID === 'admin') return next();
+
+        res.statusCode = 403;
+        res.statusMessage = 'Unauthorized';
+
+        return res.json(null); 
+ 
 } );
 
 

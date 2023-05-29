@@ -1,6 +1,6 @@
 
 import { Strategy as JwtStrategy, ExtractJwt, StrategyOptions } from 'passport-jwt';
-import { UserModel } from '../databaseModels';
+import { PermissionModel, UserModel } from '../databaseModels';
 
 
 const secretOrKey = process.env.SECRET_KEY;
@@ -19,11 +19,12 @@ export default new JwtStrategy(jwtOptions, async (payload, done) => {
       }
 
       // Find the user associated with the token
-      const user = await UserModel.findOne({_id: payload.sub});        
+      const user = await UserModel.findOne({_id: payload.sub});    
       
       if (!user) {
         return done(null,false); // User not found
       }
+      
       return done(null,user);
 
     }
