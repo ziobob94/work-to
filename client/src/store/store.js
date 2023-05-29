@@ -9,30 +9,33 @@ const store = createStore({
     // Initial state
     isAuthenticated: false,
     user: null,
+    token: null,
   },
   mutations: {
     // Mutations to modify state
     setAuthenticated(state, payload){
-        
         state.isAuthenticated = payload;
     },
     setUser(state, payload){
-        
         state.user = payload;
+    },
+    setToken(state, payload){
+        state.token = payload;
     }
+    
   },
   actions: {
-    async handleLoginAPI({commit},loginData){
+    async handleLoginAPI({commit, dispatch}, payload){
       let logged = null;
       try{ 
-          // console.log("[handleLoginAPI] DATA: ", loginData);
-          logged = await instance.post("/api/login", loginData );
-          if(logged.data.result){
-              Cookies.set("auth", logged.data.data, {expires: 1 });
+          // debugger
+          // console.log("[handleLoginAPI] DATA: ", payload);
+          logged = await instance.post("/api/login", payload );
+          if(logged.headers.authorization){
+              dispatch("setAuthCookie", logged.headers.authorization);
               // console.log("INSTANCE ", instance.defaults.headers.common);
-              instance.defaults.headers.common.Authorization = 'Bearer ' + logged.data.data // Replace with your authorization token
+              dispatch("setAuthHeader"); // Replace with your authorization token
               commit("setAuthenticated", true);
-              commit("setUser", logged.data.data);
           }
           return logged.data;
 
@@ -44,13 +47,13 @@ const store = createStore({
           return {result: false, message: "Login Failed", error: err}
       }
     },
-    async handleSignupAPI(signupData){
+
+    async handleSignupAPI(store, payload){
       let signed = null;
       try{ 
-          signed = instance.post("/api/register", signupData );
-
-          return !!signed.data;
-
+        debugger
+          signed = await instance.post("/api/register", payload );
+          return signed;
       }
       catch(err){
           console.error("[SignupFormComponent] ERROR: ", err);
@@ -60,17 +63,16 @@ const store = createStore({
       }
     },
 
-    async handleLogoutAPI({commit}){
+    async handleLogoutAPI({dispatch, commit}){
       let logged = null;
       try{ 
         //debugger;
           logged = await instance.get("/api/logout");
           if(logged.data.result){
-              Cookies.remove('auth');
-            // console.log("INSTANCE ", instance.defaults.headers.common);
-              delete instance.defaults.headers.common.Authorization
+              dispatch("unsetAuthCookie");
+              // console.log("INSTANCE ", instance.defaults.headers.common);
+              dispatch("unsetAuthHeader");
               commit("setAuthenticated", false);
-              commit("setUser", null);
           }
           return logged;
 
@@ -82,33 +84,87 @@ const store = createStore({
           return {result: false, message: "Logout Failed", error: err}
       }
     },
-    async verifyToken ({commit}) {
+
+    async verifyToken ({commit,dispatch}) {
+
       let isValid = false
+
       try {
-          const cookieToken = Cookies.get("auth");
-          instance.defaults.headers.common.Authorization = 'Bearer ' + cookieToken;
+
+          let authCookie = Cookies.get("auth");
+
+          if(!authCookie) return isValid;
+
+          dispatch("setAuthHeader", authCookie);
+
           const resp = await instance.get("/api/validate-token");
-          if(resp.data.result) {
-            commit("setUser", resp.data.data);
+
+          if(resp.data.result && resp.headers.authorization) {
+            // debugger;
+            dispatch("setAuthCookie", resp.headers.authorization);
+            dispatch("setAuthHeader", resp.headers.authorization);
           }
           isValid = resp.data.result;
+
       }
       catch(err){
-        console.error(err)
+
+        console.error(err);
+
         isValid = false;
+
       }
-      commit("setAuthenticated", isValid)
-      if(!isValid) commit("setUser", null);
+
+      commit("setAuthenticated", isValid);
+
       return isValid;
-  }
+    },
+
+    setAuthCookie(store, payload){
+      Cookies.set("auth", payload.replace('Bearer ', ''), {expires: 1 });
+    },
+
+    unsetAuthCookie(){
+      if(Cookies.get("auth")){
+        Cookies.remove('auth');
+        return true;
+      }
+      return false;
+    },
+
+    setAuthHeader(store, payload = null){
+      if(!payload && !Cookies.get("auth")) return false;
+      
+      const cookieToken = (payload) ? payload : Cookies.get("auth");
+      
+      instance.defaults.headers.common.Authorization = 'Bearer ' + cookieToken.replace('Bearer ', '');
+      
+      return true;
+    },
+
+    unsetAuthHeader(){
+      if(instance?.defaults?.headers?.common?.Authorization) {
+        delete instance.defaults.headers.common.Authorization;
+        return true;
+      }
+      return false;
+    }
   },
+  
   getters: {
+
     // Getters to compute derived state
     getAuthenticationStatus(state){
         return state.isAuthenticated;
     },
+
     getUser(state){
         return state.user;
+    },
+
+    getToken(state){
+      //TODO: implementare estrazione dati da JWT
+      return state.token;
     }
   }
 });

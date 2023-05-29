@@ -1,9 +1,11 @@
 import bcrypt from 'bcryptjs';
 import jwt from "jsonwebtoken";
-import { IUser, PermissionModel, UserModel } from "../../databaseModels";
+import { IUser, UserModel } from "../../databaseModels";
 import { ApiReturn } from '../../types';
 import { MongoMangerClass } from '../../lib/MongoManagerClass';
 import { insertUser } from '../../models/userModel';
+import * as messages from "../../messages.json"
+
 
 
 async function loginHelper(req: any) : Promise<ApiReturn> {
@@ -15,7 +17,7 @@ async function loginHelper(req: any) : Promise<ApiReturn> {
         
         // If the user does not exist, respond with an error
         if (!user) {
-            return {result: false, code:400, message: 'User not found' };
+            return {result: false, code:400, message: messages["50023"] };
         }
         
         // Compare the provided password with the stored password
@@ -23,7 +25,7 @@ async function loginHelper(req: any) : Promise<ApiReturn> {
         
         // If the passwords do not match, respond with an error
         if (!isMatch) {
-            return {result: false, code:400,  message: 'Invalid credentials' };
+            return {result: false, code:400,  message: messages["50024"] };
         }
         
         // Create the payload for the JWT
@@ -35,14 +37,14 @@ async function loginHelper(req: any) : Promise<ApiReturn> {
         // Sign the JWT with the secret key and set an expiration time
         const token: string = jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: '1h' });
         
-        let permissions = await getUserPermissions()
+        //let permissions = await getUserPermissions()
         
         // Send the token as the response
         return {result: true, code: 200,  message: 'Ok', data: token };
     }
     catch(err){
-        console.error("[auth.loginHandler] ERROR: ", err);
-        return {result: false, code:500,  message: err.message };
+        console.error("[auth.loginCallback] ERROR: ", err);
+        return {result: false, code:500,  message: messages["50023"]};
     }
 }
 
@@ -57,7 +59,7 @@ async function hashPassword(password: string): Promise<string> {
 async function registerHelper(req: any, res: any, db: MongoMangerClass): Promise<ApiReturn>{
     console.log("[routes.auth.bindAuthRoutes] ROURTE -> /regiter");
     
-    let userInserted : ApiReturn = {result: false, message: "Signup Failed", code: 500 };
+    let userInserted : ApiReturn = {result: false, message: messages["50003"], code: 500 };
     
     try {
         const user: IUser = req.body;
@@ -65,7 +67,7 @@ async function registerHelper(req: any, res: any, db: MongoMangerClass): Promise
         if(!user || Object.keys(user).length === 0 ) {
             res.statusCode = 409;
             res.statusMessage = "REQUEST_FOR_EMPTY_USER";
-            userInserted.message = "Missing data";
+            userInserted.message = messages["50010"];
             return userInserted;
         }
         
@@ -77,14 +79,15 @@ async function registerHelper(req: any, res: any, db: MongoMangerClass): Promise
     }
     catch(err){
         console.error("[auth.registerHelper] ERROR: ", err)
-        userInserted = {result: false, message: "Signup Failed", code: 500 };
+        userInserted = {result: false, message: messages["50003"], code: 500 };
     }
-    
+    res.statusCode = userInserted.code;
+    res.statusMessage = userInserted.message;
     return userInserted; 
 }
 
-
-export async function tokenValidationHandler(req: any): Promise<ApiReturn> {
+//TODO: implementare validatione 
+export async function tokenValidationCallback(req: any): Promise<ApiReturn> {
     const ret : ApiReturn = {
         result: true,
         message: "ok",
@@ -94,52 +97,60 @@ export async function tokenValidationHandler(req: any): Promise<ApiReturn> {
     
 }
 
-export async function registrationHandler (req: any,res: any, db: MongoMangerClass) {
+export async function registrationCallback (req: any,res: any, db: MongoMangerClass) {
     const regRes : ApiReturn = await registerHelper(req, res, db);
-    res.json(regRes)
+    res.statusCode = regRes.code;
+    res.json(regRes);
 }
 
-export async function loginHandler (req: any, res: any){
+export async function loginCallback (req: any, res: any){
     const logRes: ApiReturn = await loginHelper(req); 
- 
-      
-    res.json(logRes);
+    if(logRes.result) res.set('Authorization', 'Bearer ' + logRes.data);
+    // res.cookie('auth', logRes.data, { maxAge: 3600000, httpOnly: true });
+    res.statusCode = logRes.code;
+    res.statusMessage = logRes.message;
+    return res.json(logRes);
 }
 
-export async function validateHandler (req: any,res: any) {
+export async function validateCallback (req: any,res: any) {
     let response : ApiReturn = {
         result: false,
         message: 'Token Validation Error',
         code: 500
     }
     try{
-        response = await tokenValidationHandler(req);
-        if(req?.user) response.data = req.user;
+        const isValid = await tokenValidationCallback(req);
+        if(isValid.result && req.headers.authorization) {
+            res.setHeader('Authorization', 'Bearer ' + req.headers.authorization.replace("Bearer ", ''));
+            response = isValid;
+        } 
+
     }
     catch(err){
-        console.error("[auth.validateHandler] ERROR: ", err);
+        console.error("[auth.validateCallback] ERROR: ", err);
     }
+    res.statusCode = response.code;
+    res.statusMessage = response.message;
+    return res.json(response);}
 
-    res.json(response);
-}
 
-
-export async function logoutHandler(req, res) {
+export async function logoutCallback(req, res) {
     const response : ApiReturn = {
         result: false,
-        message: 'Error on logout',
+        message: messages["50033"],
         code: 500
     }
     try{
         response.result = true;
-        response.message = 'Logout success'
+        response.message = messages["50030"]
         response.code = 200;
     }
     catch(err){
-        console.error("[auth.validateHandler] ERROR: ", err);
+        console.error("[auth.validateCallback] ERROR: ", err);
     }
-
-    res.json(response);
+    res.statusCode = response.code;
+    res.statusMessage = response.message;
+    return res.json(response);
 }
 
 

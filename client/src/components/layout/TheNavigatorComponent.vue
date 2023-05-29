@@ -15,7 +15,7 @@
 
 </template>            
 <script>
-import { mapGetters, mapState, mapMutations, mapActions } from 'vuex';
+import { mapGetters, mapState, mapActions } from 'vuex';
 
 
 export default {
@@ -64,8 +64,7 @@ export default {
                 hash: 'home',
                 name: '/',
                 visible: true,
-            }
-,        
+            },        
             {
                 label: 'Logout',
                 icon: 'pi pi-fw pi-heart',
@@ -84,8 +83,7 @@ export default {
         this.isLogged = this.isAuthenticated;
     },
     methods: {
-        ...mapMutations(["setAuthenticated"]),
-        ...mapActions(["handleLogoutAPI", "verifyToken"]),
+        ...mapActions(["handleLogoutAPI"]),
 
         navigate(to){
             this.$router.push(to);
@@ -105,7 +103,7 @@ export default {
                     swalOpt.title = "Success";
                     swalOpt.text = "Logout Ok";
                     swalOpt.icon = "success";
-                    this.navigate({name: "home"})
+                    this.navigate({name: "login"})
                 }
             }
             catch(err){

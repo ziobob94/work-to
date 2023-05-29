@@ -1,0 +1,20 @@
+{
+    "50001": "Signup success",
+    "50002": "Signup failed",
+    "50003": "Signup error",
+    "50004": "Invalid password",
+    "50005": "Username already exists",
+    "50006": "Email already exists",
+    "50007": "Missing password",
+    "50008": "Missing username",
+    "50009": "Missing email",
+    "50010": "Missing data",
+    "50020": "Login success",
+    "50021": "Login failed",
+    "50022": "Login error",
+    "50023": "User not found",
+    "50024": "Invalid credentials",
+    "50030": "Logout success",
+    "50031": "Logout failed",
+    "50032": "Logout error"
+}

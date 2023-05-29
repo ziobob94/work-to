@@ -33,8 +33,9 @@ const userSchema = new Schema<IUser>({
     validate: {
       validator: function (value: string) {
         // Regular expression to validate email format
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(value);
+        const emailRegex = /^[\w\.-]+@[a-zA-Z\d-]+(\.[a-zA-Z\d-]+)*\.[a-zA-Z]{2,}$/;
+        const test = emailRegex.test(value);
+        return test;
       },
       message: 'Please provide a valid email address',
     },

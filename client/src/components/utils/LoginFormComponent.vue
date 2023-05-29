@@ -16,17 +16,22 @@
             type="email"
             color="primary"
             variant="outlined" 
-            required
+            :rules="[(v => v.length > 0)]"
             ></v-text-field>
             
             <v-text-field
-            v-model="loginData.password" 
-            label="Password"
-            type="password"
-            color="primary"
-            variant="outlined" 
-            required
-            ></v-text-field>
+                color="primary"
+                label="Password"
+                variant="outlined" 
+                @click:append-inner="show = !show"
+                hint='Insert your password'
+                :append-inner-icon="show ? 'fa-eye' : 'fa-eye-slash'"
+                :rules="[(v => v.length > 0)]"
+                :type="show ? 'text' : 'password'"
+                v-model="loginData.password"
+
+            >
+        </v-text-field>
             
             <v-checkbox
                 v-model="loginData.remember"
@@ -63,7 +68,8 @@ export default {
                 password: "",
                 remember: ""
             },
-            logged: false
+            logged: false,
+            show: false
         }
     },
     methods:{
@@ -92,8 +98,6 @@ export default {
                     swalOpt.title = (logged.result) ? "User Logged" : "Login Fails";
                     swalOpt.text = logged.message;
                     swalOpt.icon = (logged.result) ? "success" : "error";
-
-                    
                 }
 
                 await this.$swal.fire(swalOpt);

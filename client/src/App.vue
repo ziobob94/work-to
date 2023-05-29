@@ -29,7 +29,6 @@ export default {
     TheFooterComponent,
     TheNavigatorComponent,
     TheHeaderComponent
-
 },
   data(){
       return{

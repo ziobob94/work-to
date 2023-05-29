@@ -1,7 +1,7 @@
 import { ApiReturn } from "../types";
 import { IPermission, PermissionModel } from "../databaseModels";
 
-export async function insertPermission(permission) : Promise<ApiReturn> {
+export async function insertPermission(permission: any) : Promise<ApiReturn> {
 
     try {
         const created = await PermissionModel.create(permission);
@@ -77,12 +77,12 @@ export async function updatePermission(permission: IPermission) : Promise<ApiRet
 
 export async function getUserPermissions(userRole: IPermission) : Promise<ApiReturn> {
 
-    try {
+/*     try {
         //TODO: qui
         const permissions = await PermissionModel.aggregate([
             {
               '$match': {
-                '_id': new ObjectId('6471f82726952cc7fce06bfc')
+                '_id': '6471f82726952cc7fce06bfc'
               }
             }, {
               '$lookup': {
@@ -107,7 +107,8 @@ export async function getUserPermissions(userRole: IPermission) : Promise<ApiRet
     catch(error: any) {
         console.error('Error creating permission: ', error);
         return {result: false, message: error.message, code: 401};
-    }
+    } */
+    return {result: false, message: "message", code: 401};
 }
 
 

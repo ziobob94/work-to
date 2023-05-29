@@ -1,6 +1,8 @@
 
 import { Strategy as JwtStrategy, ExtractJwt, StrategyOptions } from 'passport-jwt';
-import { PermissionModel, UserModel } from '../databaseModels';
+import { UserModel } from '../databaseModels';
+import dotenv from 'dotenv';
+dotenv.config();
 
 
 const secretOrKey = process.env.SECRET_KEY;
@@ -11,7 +13,9 @@ const jwtOptions: StrategyOptions = {
 };
 
 export default new JwtStrategy(jwtOptions, async (payload, done) => {
-    try {
+   
+  
+  try {
 
       if (payload.expiresAt < Date.now()) {
         // Token has expired

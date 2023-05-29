@@ -1,7 +1,7 @@
 import { ApiReturn } from "../types";
 import { RoleModel } from "../databaseModels";
 
-export async function insertRole(role) : Promise<ApiReturn> {
+export async function insertRole(role: any) : Promise<ApiReturn> {
 
     try {
         const created = await RoleModel.create(role);

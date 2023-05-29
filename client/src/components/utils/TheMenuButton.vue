@@ -26,7 +26,7 @@ export default {
     data() {
         return {
             items: [
-            { title: 'Permissions', name: 'permissions' },
+                { title: 'Permissions', name: 'permissions' },
             ]}
         },
     methods: {
