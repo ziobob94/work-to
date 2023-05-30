@@ -11,6 +11,7 @@
     "axios": "^1.4.0",
     "core-js": "^3.8.3",
     "js-cookie": "^3.0.5",
+    "jsonwebtoken": "^9.0.0",
     "lodash": "^4.17.21",
     "normalize.css": "^8.0.1",
     "sweetalert2": "^11.7.5",

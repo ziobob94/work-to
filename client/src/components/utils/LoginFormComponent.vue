@@ -73,8 +73,8 @@ export default {
         }
     },
     methods:{
-        ...mapMutations(["setAuthenticated"]),
-        ...mapActions(["handleLoginAPI"]),
+        ...mapMutations('user',["setAuthenticated"]),
+        ...mapActions("auth", ["handleLoginAPI"]),
         async handleSubmit(ev){
             const swalOpt = {
                 title: "Fail",

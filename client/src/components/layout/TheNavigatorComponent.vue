@@ -76,8 +76,13 @@ export default {
         }
     },
     computed:{
-        ...mapState(["isAuthenticated"]),
-        ...mapGetters(["getAuthenticationStatus", "getUser"])
+        ...mapState({
+            isAuthenticated: "auth/isAuthenticated"
+        }),
+        ...mapGetters({
+            getAuthenticationStatus: "auth/getAuthenticationStatus", 
+            getUser: "user/getUser"
+        })
     },
     mounted(){
         this.isLogged = this.isAuthenticated;

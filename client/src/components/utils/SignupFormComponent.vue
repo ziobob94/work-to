@@ -127,7 +127,7 @@ export default {
     mounted() {
     },
     methods:{
-        ...mapActions(["handleLoginAPI","handleSignupAPI"]),
+        ...mapActions('auth',["handleLoginAPI","handleSignupAPI"]),
         async handleSubmit(ev){
             const swalOpt = {
                 title: "Fail",

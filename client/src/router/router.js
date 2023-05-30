@@ -43,14 +43,14 @@ const routes = [
         name: 'login',
         hash: '#login',
         path: '/login',
-        component: LoginComponent,
+        component: async () => LoginComponent,
         meta: { transitionName: '' }
     },
     {
         name: 'signup',
         hash: '#signup',
         path: '/signup',
-        component: SignupComponent,
+        component: async () => SignupComponent,
         meta: { transitionName: '' }
     }
 ]
@@ -81,7 +81,7 @@ async function checkAdmnin(){
 async function authMiddleware(to, from, next) {
     // Implement your authentication logic
     if (to.meta.requiresAuth ) {
-        const isAuthenticated = await store.dispatch("verifyToken");
+        const isAuthenticated = await store.dispatch("auth/verifyToken");
         if (!isAuthenticated) return next({ name: 'login' });
     } 
 
