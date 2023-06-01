@@ -1,50 +1,27 @@
 <template>
-  <v-app class="w-100">
-    <TheHeaderComponent/>
-    <div class="body-wrapper">
-          <router-view v-slot="{ Component }">
-              <!-- Use any custom transition and  to `fade` -->
-              <!-- <transition name="moveUp" mode="out-in" > -->
-                <component :is="Component" />
-              <!-- </transition> -->
-          </router-view>
-      </div>
-      <TheNavigatorComponent/>
-    </v-app>
-
+  <img alt="Vue logo" src="./assets/logo.png">
+  <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
 </template>
 
-<script>
+<script lang="ts">
+import { Options, Vue } from 'vue-class-component';
+import HelloWorld from './components/HelloWorld.vue';
 
-import TheFooterComponent from './components/layout/TheFooterComponent.vue';
-import TheNavigatorComponent from './components/layout/TheNavigatorComponent.vue';
-import "./assets/main.scss";
-import "./assets/animations.scss";
-import "./assets/transitions.scss";
-import TheHeaderComponent from './components/layout/TheHeaderComponent.vue';
-
-export default {
-  name: 'App',
+@Options({
   components: {
-    TheFooterComponent,
-    TheNavigatorComponent,
-    TheHeaderComponent
-},
-  data(){
-      return{
-      }
+    HelloWorld,
   },
-  async mounted() {
-
-  },
-  methods:{
-  }
-}
+})
+export default class App extends Vue {}
 </script>
 
-
-
-<style lang="scss">
-
-
+<style>
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
+}
 </style>

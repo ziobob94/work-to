@@ -91,7 +91,7 @@ const authModule = {
             
             try {
                 
-                let authCookie = Cookies.get("auth");
+                const authCookie = Cookies.get("auth");
                 
                 if(!authCookie) return isValid;
                 

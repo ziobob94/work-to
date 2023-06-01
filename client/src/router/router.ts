@@ -6,11 +6,10 @@ import store from "@/store/store";
 import { routes } from './routes';
 
 
-const router = Router.createRouter({
+const router : any = Router.createRouter({
     // 4. Provide the history implementation to use. We are using the hash history for simplicity here.
     history: Router.createWebHistory(),
     routes,
-    mode: "hash"
 })
 
 
@@ -19,7 +18,7 @@ async function checkAdmnin(){
     try{ 
         isValid = await instance.get("/api/admin");
     }
-    catch(e){
+    catch(e: any){
         console.error("ERR -> ", e)
         if(e.response?.status === 403) 
         isValid = false;
@@ -28,7 +27,7 @@ async function checkAdmnin(){
     
 }
 
-async function authMiddleware(to, from, next) {
+async function authMiddleware(to: any, from: any, next: any) {
     // Implement your authentication logic
     if (to.meta.requiresAuth ) {
         const isAuthenticated = await store.dispatch("auth/verifyToken");
@@ -37,7 +36,7 @@ async function authMiddleware(to, from, next) {
     
     
     if(to.meta.isAdmin) {
-        const isValid = await checkAdmnin(to);
+        const isValid = await checkAdmnin();
         if (!isValid) return next({ name: 'login' })
     }
     

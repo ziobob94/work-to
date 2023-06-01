@@ -133,13 +133,13 @@ const permissionsModule = {
 			}
 			commit("setPermissionsValues", null);
 		},
-		async fetchRoles({commit}){
+		async fetchRoles({commit} : any){
 			try{
 				let ret = {
 					result: false,
 					message: "Save roles ",
 					code: 500
-
+					
 				}
 				ret = await instance.get("/api/admin/roles");
 
