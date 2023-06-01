@@ -1,0 +1,10 @@
+{
+	"name": "Work-to",
+	"short_name": "WorkTo",
+	"start_url": "/",
+	"display": "standalone",
+	"background_color": "#ffffff",
+	"theme_color": "#3367D6",
+	"icons": [
+	]
+  }

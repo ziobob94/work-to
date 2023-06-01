@@ -3,7 +3,6 @@ import express, { Router } from "express";
 import { createPermissions, getAllPermissionsCallback, deletePermissionCallback, updatePermissionCallback } from "../../controllers/admin/permissionsController";
 import { createRoles, getAllRolesCallback } from "../../controllers/admin/rolesController";
 import passport from "passport";
-import { ApiReturn } from "src/types";
 
 const adminRouter : Router = express.Router();
 
@@ -21,13 +20,17 @@ adminRouter.use("/admin", passport.authenticate('jwt', {session: false}),
  
 } );
 
-
+async function getAdminCallback(req, res) {
+    return res.json(true);
+}
+adminRouter.get("/admin", getAdminCallback)
 adminRouter.get("/admin/permissions", getAllPermissionsCallback);
 adminRouter.post("/admin/permissions", createPermissions);
 adminRouter.put("/admin/permissions", updatePermissionCallback);
 adminRouter.delete("/admin/permissions/:id", deletePermissionCallback);
 adminRouter.post("/admin/roles", createRoles);
 adminRouter.get("/admin/roles", getAllRolesCallback);
+
 
 
 

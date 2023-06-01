@@ -6,6 +6,8 @@ import { MongoMangerClass } from "./MongoManagerClass";
 import passport from '../passport/passportSet';
 import adminRouter from '../router/routes/adminRouter';
 import autheticationRouter from '../router/routes/authenticationRouter';
+dotenv.config();
+import path from 'path';
 /* 
 export class ServerClass{
     
@@ -113,7 +115,8 @@ const mdb : MongoMangerClass = new MongoMangerClass();
 let server: Express = express();
 
 function setRouter(){
-        
+    
+
     server.use("/", autheticationRouter);
     server.use("/", adminRouter);
 
@@ -122,7 +125,13 @@ function setRouter(){
         res.status(500).json({ error: err.message });
     });
     
-    console.log("[serverClass.setRoutes] SUCCESS");
+    console.log("[serverClass.setRoutes] SUCCESS", process.env.MODE );
+
+    if(process.env.MODE === "production" ) {
+        const p = process.env.CLIENT_INDEX_PATH;
+        server.get("/", (req,res) => res.sendFile(path.resolve(p))); // Replace 'index.html' with the path to your web page file
+    }
+
     
 }
     

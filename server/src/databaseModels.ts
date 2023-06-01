@@ -1,14 +1,6 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
+import { IPermission, IRole, IUser } from './types';
 
-export interface IUser extends Document {
-  first: string,
-  last: string,
-  email: string;
-  username: string,
-  password: string,
-  termsAccepted: boolean,
-  roleID: string
-}
 
 const userSchema = new Schema<IUser>({
   first: {
@@ -82,11 +74,6 @@ const userSchema = new Schema<IUser>({
   }
 }, {timestamps: true});
 
-export interface IRole extends Document {
-    name: string,
-    role: string,
-}
-
 const roleSchema = new Schema<IRole>({
   name: {
     type: String,
@@ -99,13 +86,6 @@ const roleSchema = new Schema<IRole>({
     trim: false
   }
 });
-
-export interface IPermission extends Document {
-  name: string,
-  descrtiption?: string,
-  slug: string,
-  rolesIDS: string[]
-}
 
 const permissionSchema = new Schema<IPermission>({
   name: {
@@ -123,8 +103,8 @@ const permissionSchema = new Schema<IPermission>({
     required: true,
     trim: false
   },
-  rolesIDS: {
-    type: [String],
+  roleID: {
+    type: String,
     required: true
   }
 });

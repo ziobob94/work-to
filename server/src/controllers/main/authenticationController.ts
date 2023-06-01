@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import jwt from "jsonwebtoken";
-import { IUser, UserModel } from "../../databaseModels";
-import { ApiReturn } from '../../types';
+import { UserModel } from "../../databaseModels";
+import { ApiReturn, IUser } from '../../types';
 import { MongoMangerClass } from '../../lib/MongoManagerClass';
 import { insertUser } from '../../models/userModel';
 import * as messages from "../../messages.json"

@@ -1,6 +1,6 @@
-import { IPermission } from "../../databaseModels";
-import { ApiReturn } from "../../types"
+import { ApiReturn, PermissionReq, IPermission, IRole } from "../../types";
 import { getAllPermission, insertPermission, deletePermission, updatePermission } from "../../models/permissionModel";
+import * as _ from 'lodash';
 
 export async function createPermissions( req: any, res: any): Promise<ApiReturn>{
     console.log("[routes.auth.bindAuthRoutes] ROURTE -> /regiter");
@@ -8,7 +8,7 @@ export async function createPermissions( req: any, res: any): Promise<ApiReturn>
     let permissionCreated : ApiReturn = {result: false, message: "Signup Failed", code: 500 };
     
     try {
-        const perms: IPermission[] = req.body;
+        const perms: PermissionReq[] = req.body;
         
         if(!perms || Object.keys(perms).length === 0 ) {
             res.statusCode = 409;
@@ -27,19 +27,34 @@ export async function createPermissions( req: any, res: any): Promise<ApiReturn>
     return res.json(permissionCreated); 
 }
 
- async function createHandler (permissions: IPermission[]): Promise<ApiReturn>{
+ async function createHandler (permissions: PermissionReq[]): Promise<ApiReturn>{
     const resp : ApiReturn = {
         result: false,
-        message: "Creation permission ",
+        message: "",
         code: 50001
     }
 
     if(permissions?.length > 0) {
         const len: number = permissions.length;
-        let perm : IPermission = null;
+        let perm : PermissionReq = null;
         for(let i = 0; i < len; i++){
             perm = permissions[i];
-            await insertPermission(perm);
+
+            if(perm.rolesIDS.length < 1) return resp;
+
+            const roles: IRole[] = perm.rolesIDS;
+
+            for(let j = 0; j <  roles.length; j++) {
+
+                const ins: any = _.clone(perm);
+
+                delete ins.rolesIDS;
+
+                ins.roleID = roles[j].role;
+
+                await insertPermission(ins);
+            }
+
         }
         resp.result = true;
         resp.message += 'success';
@@ -55,9 +70,8 @@ export async function getAllPermissionsCallback(req, res){
         message: "Read all permission ",
         code: 50002
     }
-
     resp = await getAllPermission();
-    
+
     return res.json(resp); 
 
 }

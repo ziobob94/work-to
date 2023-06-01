@@ -26,6 +26,7 @@
               </template>
         </v-autocomplete>
 
+
         <div class="w-100 d-flex justify-center text-center">
             <v-dialog
                 v-model="permissionDialogToggle"
@@ -173,11 +174,9 @@
             </div>
         </div>
 
-
-
         <div v-if="permissionsSelected" class="w-100 p-2 d-flex flex-column">
             <div id="first" class="d-flex mb-4">
-                <v-list>
+                <v-list class="w-100 d-flex justify-space-between flex-column">
                     <v-list-subheader>PERMISSION</v-list-subheader>
 
                     <v-list-item
@@ -202,7 +201,7 @@
                         :key="i"
                         :value="item"
                     >
-                        <v-list-item-title v-text="item"></v-list-item-title>
+                        <v-list-item-title v-text="item.name"></v-list-item-title>
                     </v-list-item>
                 </v-list>
             </div>
@@ -213,14 +212,13 @@
 </template>
 
 <script>
+import { mapActions, mapState } from 'vuex';
 export default {
     name: "PermissionsComponent",
     components: {
     },
     data(){
         return{
-            permissionsValues: [],
-            permissionsSelected: null,
             newRole:{
                 name: "",
                 role: "",
@@ -232,28 +230,30 @@ export default {
                 rolesIDS: []
             },
             tempPermission: null,
-            rolesValues: [],
-            rolesSelected: [],
             permissionDialogToggle: false,
             rolesDialogToggle: false,
             dialogType: 'new',
-            saveFunction: null,            
+            saveFunction: null,  
+			rolesSelected: null,
+			permissionsSelected: null          
         }
     },
-    async mounted() {
-       try { 
-            await this.init();
-        }
-        catch(err) {
-            console.error("[PermissionComponent.mounted] ERROR: ", err.message)
-        }
-    },
-    computed:{
-    },
-    methods: {
+	computed:{
+		...mapState('permissionsAd', ["permissionsValues","rolesValues"])
+
+	},
+    methods: { 
+		...mapActions({
+			fetchPermissions: 'permissionsAd/fetchPermissions',
+			fetchRoles: 'permissionsAd/fetchPermissions',
+			savePermissionsAPI: 'permissionsAd/savePermissionsAPI',
+			saveRoleAPI: 'permissionsAd/saveRoleAPI',
+			deletePermissionAPI: 'permissionsAd/deletePermissionAPI',
+			editPermissionAPI: 'permissionsAd/editPermissionAPI',
+		}),
         async init(){
-            await this.getRoles();
-            await this.getPermission();
+			await this.fetchPermissions();
+			await this.fetchRoles();
             this.rolesSelected = [];
             this.permissionsSelected = null;
             this.dialogType = 'new';
@@ -278,22 +278,16 @@ export default {
             }
             try{
 
-                let ret = {
-                    result: false,
-                    message: "Save permission",
-                    code: 500
-                }
-                ret = await this.$http.post("/api/admin/permissions", [this.tempPermission]);
+                const ret = await this.savePermissionsAPI([this.tempPermission]);
 
-                if(ret.data.result) {
+                if(ret.result) {
                     this.newPermission = {
                         name: "",
                         slug: "",
                         description: "",
                         rolesIDS: []
                     }
-                    this.permissionDialogToggle = false;
-                    await  this.init()
+                    await  this.init();
                     swalOpt.title = 'Success';
                     swalOpt.text += 'Success';
                     swalOpt.icon = 'success';
@@ -304,7 +298,6 @@ export default {
                     swalOpt.text += 'Fail';
                     swalOpt.icon = 'warning';
                 }
-                console.log(ret);
 
             }
             catch(err){
@@ -312,13 +305,12 @@ export default {
                 swalOpt.text += 'Fail: server error';
                 swalOpt.icon = 'error';
             }
+			this.rolesDialogToggle = false;
+            await this.$swal.fire(swalOpt);
+			this.rolesDialogToggle = true;
 
-            this.$swal.fire(swalOpt);
         },
-
-        async editPermission(){
-            // eslint-disable-next-line no-debugger
-            // debugger
+        async editPermissionAPI(){
             const swalOpt = {
                     title: "Fail",
                     text: "Edit Permission ",
@@ -334,7 +326,7 @@ export default {
                     code: 500
                 }
                 
-                ret = await this.$http.put("/api/admin/permissions", [this.tempPermission]);
+                ret = await this.editPermissionAPI("/api/admin/permissions", [this.tempPermission]);
 
                 if(ret.data.result) {
                     this.permissionDialogToggle = false;
@@ -342,15 +334,12 @@ export default {
                     swalOpt.title = 'Success';
                     swalOpt.text += 'Success';
                     swalOpt.icon = 'success';
-
                 }
                 else {
                     swalOpt.title = 'Fail';
                     swalOpt.text += 'Fail';
                     swalOpt.icon = 'warning';
                 }
-                console.log(ret);
-
             }
             catch(err){
                 swalOpt.title = 'Fail';
@@ -360,105 +349,68 @@ export default {
 
             this.$swal.fire(swalOpt);
         },
-        async deletePermission(){
-            // eslint-disable-next-line no-debugger
+        async deletePermissionAPI(){
             const swalOpt = {
-                    title: "Fail",
+                    title: "Error",
                     text: "Edit Permission ",
                     icon: "error",
                     showConfirtButton: true,
                     confirmButtonText: "Ok"
             }
-            try{
-
-                let ret = {
-                    result: false,
-                    message: "Save permission",
-                    code: 500
-                }
-                
-                ret = await this.$http.delete(`/api/admin/permissions/${this.tempPermission._id}`);
-                // eslint-disable-next-line no-debugger
-                // debugger;
-
-                if(ret.data.result) {
-                    this.permissionDialogToggle = false;
-                    await  this.init()
-                    swalOpt.title = 'Success';
-                    swalOpt.text += 'Success';
-                    swalOpt.icon = 'success';
-
-                }
-                else {
-                    swalOpt.title = 'Fail';
-                    swalOpt.text += 'Fail';
-                    swalOpt.icon = 'warning';
-                }
-                console.log(ret);
-
-            }
-            catch(err){
-                swalOpt.title = 'Fail';
-                swalOpt.text += 'Fail: server error';
-                swalOpt.icon = 'error';
-            }
-
+			let data = await this.deletePermissionAPI();
+			if(data.result) {
+				this.permissionDialogToggle = false;
+				await  this.init()
+				swalOpt.title = 'Success';
+				swalOpt.text += 'Success';
+				swalOpt.icon = 'success';
+			}
+			else {
+				swalOpt.title = 'Fail';
+				swalOpt.text += 'Fail';
+				swalOpt.icon = 'warning';
+			}
             this.$swal.fire(swalOpt);
         },
         async saveRole(){
+			
+            const swalOpt = {
+                    title: "Fail",
+                    text: "Save Role ",
+                    icon: "error",
+                    showConfirtButton: true,
+                    confirmButtonText: "Ok"
+            }
             try{
-                 // eslint-disable-next-line no-debugger
-                // debugger
-                let ret = {
-                    result: false,
-                    message: "Save permission",
-                    code: 500
-                }
-                ret = await this.$http.post("/api/admin/roles", [this.newRole]);
 
-                console.log(ret);
+                const ret = await this.saveRoleAPI([this.newRole]);
+
+                if(ret.result) {
+                    this.newRole = {
+						name: "",
+						role: "",
+					}
+                    await  this.init();
+                    swalOpt.title = 'Success';
+                    swalOpt.text += 'Success';
+                    swalOpt.icon = 'success';
+
+                }
+                else {
+                    swalOpt.title = 'Fail';
+                    swalOpt.text += 'Fail';
+                    swalOpt.icon = 'warning';
+                }
 
             }
             catch(err){
-                return null;
+                swalOpt.title = 'Fail';
+                swalOpt.text += 'Fail: server error';
+                swalOpt.icon = 'error';
             }
-        },
-        async getPermission(){
-            try{
-                let ret = {
-                    result: false,
-                    message: "Save permission",
-                    code: 500
-                }
-                ret = await this.$http.get("/api/admin/permissions");
-                // console.log(ret);
-                if(ret.data.result){
-                    this.permissionsValues = ret.data.data;
-                }
-            }
-            catch(err){
-                return null;
-            }
-        },
-        async getRoles(){
-            try{
-                let ret = {
-                    result: false,
-                    message: "Save roles ",
-                    code: 500
-                }
-                ret = await this.$http.get("/api/admin/roles");
-                // console.log(ret);
-                
-                // eslint-disable-next-line no-debugger
-                // debugger;
-                if(ret.data.result){
-                    this.rolesValues = ret.data.data;
-                }
-            }
-            catch(err){
-                return null;
-            }
+			this.rolesDialogToggle = false;
+            await this.$swal.fire(swalOpt);
+			this.rolesDialogToggle = true;
         },
         setPemissionForDialog(open = false){
             // eslint-disable-next-line no-debugger

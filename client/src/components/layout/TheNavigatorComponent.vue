@@ -15,7 +15,7 @@
 
 </template>            
 <script>
-import { mapGetters, mapState, mapActions } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 
 
 export default {
@@ -24,8 +24,6 @@ export default {
     },
     data() {
         return {
-            isLogged: false,
-            active: '',
             itemsLogged: [
             {
                 label: 'Home',
@@ -76,19 +74,13 @@ export default {
         }
     },
     computed:{
-        ...mapState({
-            isAuthenticated: "auth/isAuthenticated"
-        }),
-        ...mapGetters({
-            getAuthenticationStatus: "auth/getAuthenticationStatus", 
-            getUser: "user/getUser"
-        })
+        ...mapState('auth', ["isAuthenticated"]),
     },
     mounted(){
-        this.isLogged = this.isAuthenticated;
     },
     methods: {
-        ...mapActions(["handleLogoutAPI"]),
+        ...mapActions({
+            handleLogoutAPI: "auth/handleLogoutAPI"}),
 
         navigate(to){
             this.$router.push(to);
@@ -103,8 +95,8 @@ export default {
             }
             try{
                 const outResp = await this.handleLogoutAPI()
-                // // console.log("[TheMenuComponent.logutHandle]", outResp.data);
-                if(outResp.data.result){
+                 console.log("[TheMenuComponent.logutHandle]", outResp);
+                if(outResp?.data?.result){
                     swalOpt.title = "Success";
                     swalOpt.text = "Logout Ok";
                     swalOpt.icon = "success";

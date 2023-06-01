@@ -1,5 +1,4 @@
-import { IRole } from "../../databaseModels";
-import { ApiReturn } from "../../types"
+import { ApiReturn, IRole} from "../../types"
 import { getAllRole, insertRole } from "../../models/roleModel";
 
 export async function createRoles( req: any, res: any): Promise<ApiReturn>{

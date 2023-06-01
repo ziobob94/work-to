@@ -1,8 +1,7 @@
-import { ApiReturn } from "../types";
-import { IPermission, PermissionModel } from "../databaseModels";
+import { ApiReturn, IPermission } from "../types";
+import { PermissionModel } from "../databaseModels";
 
-export async function insertPermission(permission: any) : Promise<ApiReturn> {
-
+export async function insertPermission(permission: IPermission ) : Promise<ApiReturn> {
     try {
         const created = await PermissionModel.create(permission);
         if (created) {
@@ -21,7 +20,39 @@ export async function insertPermission(permission: any) : Promise<ApiReturn> {
 export async function getAllPermission() : Promise<ApiReturn> {
 
     try {
-        const values = await PermissionModel.find({});
+        const aggregation = [
+            {
+              '$lookup': {
+                'from': 'roles', 
+                'localField': 'roleID', 
+                'foreignField': 'role', 
+                'as': 'role'
+              }
+            }, {
+              '$group': {
+                '_id': {
+                  'slug': '$slug', 
+                  'name': '$name'
+                }, 
+                'documents': {
+                  '$push': {
+                    '$arrayElemAt': [
+                      '$role', 0
+                    ]
+                  }
+                }
+              }
+            }, {
+              '$project': {
+                '_id': 0, 
+                'slug': '$_id.slug', 
+                'name': '$_id.name', 
+                'description': '', 
+                'rolesIDS': '$documents'
+              }
+            }
+          ]
+        const values = await PermissionModel.aggregate(aggregation);
         if (values) {
             console.log('Permissions got');
             return {result: true, message: "Permissions got successfully", code: 200, data: values};
@@ -59,8 +90,7 @@ export async function updatePermission(permission: IPermission) : Promise<ApiRet
             name: permission.name,           
             slug: permission.slug,
             descrtiption: permission.descrtiption,
-            rolesIDS: permission.rolesIDS
-
+            roleID: ""
         });
         if (updated) {
             console.log('Permission created successfully: ', permission);
