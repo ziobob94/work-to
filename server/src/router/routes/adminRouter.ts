@@ -6,7 +6,9 @@ import passport from "passport";
 
 const adminRouter : Router = express.Router();
 
-
+/**
+ * MIDDLEWARE
+ */
 adminRouter.use("/admin", passport.authenticate('jwt', {session: false}),
     (req: any, res, next) => {
         // console.log("CIAO", req);
@@ -23,12 +25,38 @@ adminRouter.use("/admin", passport.authenticate('jwt', {session: false}),
 async function getAdminCallback(req, res) {
     return res.json(true);
 }
+
+/**
+ * Permissions
+ */
+/**
+ * VOID
+ */
 adminRouter.get("/admin", getAdminCallback)
+/**
+ * GET ALL PERMISSIONS
+ */
 adminRouter.get("/admin/permissions", getAllPermissionsCallback);
+/** 
+ * CREATE MULTIPLE PERMISSIONS 
+*/
 adminRouter.post("/admin/permissions", createPermissions);
+/** 
+ * UPDATE MULTIPLE PERMISSIONS 
+*/
 adminRouter.put("/admin/permissions", updatePermissionCallback);
+/** 
+ * DELETE MULTIPLE PERMISSIONS 
+*/
 adminRouter.delete("/admin/permissions/:id", deletePermissionCallback);
+
+/**
+ * Roles
+*/
 adminRouter.post("/admin/roles", createRoles);
+/**
+ * GET ALL ROLES
+ */
 adminRouter.get("/admin/roles", getAllRolesCallback);
 
 

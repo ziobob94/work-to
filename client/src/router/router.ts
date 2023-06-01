@@ -9,12 +9,13 @@ import { routes } from './routes';
 const router : any = Router.createRouter({
     // 4. Provide the history implementation to use. We are using the hash history for simplicity here.
     history: Router.createWebHistory(),
-    routes,
+    //ts-ignore
+	routes,
 })
 
 
 async function checkAdmnin(){
-    let isValid
+    let isValid: any;
     try{ 
         isValid = await instance.get("/api/admin");
     }

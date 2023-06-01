@@ -6,11 +6,12 @@
   
   <script>
 import LoginFormComponent from '../utils/LoginFormComponent.vue';
-
-  export default {
-    name: "LoginPageComponent",
+import { defineComponent } from 'vue';
+export default defineComponent({
+	name: "LoginPageComponent",
     components: { LoginFormComponent }
-}
+})
+
   </script>
   
   <style lang="scss" scoped>

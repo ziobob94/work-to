@@ -1,3 +1,5 @@
+import { ActionContext } from "vuex";
+
 const userModule = {
     namespaced: true,
     state: {
@@ -12,7 +14,7 @@ const userModule = {
         },
     },
     actions: {
-        async fetchUser ({ commit } : any) {
+        async fetchUser ({ commit }: any ) {
             // Perform asynchronous operation to fetch user data
             // Once the data is retrieved, commit the mutation to set the user
             const user = { name: 'John Doe', email: 'johndoe@example.com' }

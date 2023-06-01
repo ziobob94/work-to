@@ -5,9 +5,10 @@
 </template>
 
 <script>
-export default {
+import { defineComponent } from 'vue';
+export default defineComponent({
   name: "TheFooterComponent"
-}
+})
 </script>
 
 <style lang="scss" scoped>

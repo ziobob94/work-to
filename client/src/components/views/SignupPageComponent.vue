@@ -7,10 +7,11 @@
 <script>
 import SignupFormComponent from '../utils/SignupFormComponent.vue';
 
-export default {
+import { defineComponent } from 'vue';
+export default defineComponent({
     name: "SignupPageComponent",
     components: { SignupFormComponent }
-}
+})
 </script>
 
 <style scoped>

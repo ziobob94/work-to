@@ -13,9 +13,10 @@
 
 </template>
 
-<script>
+<script lang="ts">
 import BodyLayoutTemplate from "@/components/layout/BodyLayoutTemplate.vue";
-export default {
+import { defineComponent} from 'vue';
+export default defineComponent({
   name: 'HomePageComponent',
   components: {
       BodyLayoutTemplate,
@@ -27,14 +28,14 @@ export default {
     }
   },
   methods: {
-    getImgUrl(url) {
-            return './assets'+url
+    getImgUrl(url: string) {
+            return './assets' + url
         },
-    goTo(url,id){
+    goTo(url: string, id: string){
         if(id !== 'mail') window.open( url, "_blank");
     }
   },
-}
+})
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

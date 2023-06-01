@@ -25,7 +25,8 @@
 </template>
 
 <script>
-export default {
+import { defineComponent } from 'vue';
+export default defineComponent({
     name:'ContactFormComponent',
     data(){
         return{
@@ -35,5 +36,5 @@ export default {
     methods:{
 
     }
-}
+})
 </script>

@@ -7,11 +7,12 @@
 
 <script>
 import TheMenuButton from '../utils/TheMenuButton.vue';
-export default {
+import { defineComponent } from 'vue';
+export default defineComponent({
     name: "TheHeaderComponent",
     components:{
         TheMenuButton
     }
     
-}
+})
 </script>

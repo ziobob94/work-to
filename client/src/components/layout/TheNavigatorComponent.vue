@@ -16,9 +16,10 @@
 </template>            
 <script lang="ts">
 import { mapActions, mapState } from 'vuex';
+import { defineComponent } from "vue";
 
 
-export default {
+export default defineComponent({
     name: "TheNavigatorComponent",
     components: {
     },
@@ -87,6 +88,7 @@ export default {
             handleLogoutAPI: "auth/handleLogoutAPI"}),
 
         navigate(to: any){
+			//@ts-ignore
             this.$router.push(to);
         },
         async logoutHandle(){
@@ -116,7 +118,7 @@ export default {
         }
         
     }
-}
+})
 </script>
 
 <style lang="scss" >
