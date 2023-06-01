@@ -18,6 +18,7 @@ const userModule = {
             const user = { name: 'John Doe', email: 'johndoe@example.com' }
             commit('setUser', user)
         },
+		
         async fetchAllUsers ({ commit } : any) {
             // if (admin) 
             const users = null;

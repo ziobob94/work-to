@@ -14,7 +14,7 @@
   </v-bottom-navigation>
 
 </template>            
-<script>
+<script lang="ts">
 import { mapActions, mapState } from 'vuex';
 
 
@@ -33,6 +33,7 @@ export default {
                 hash: 'home',
                 name: '/',
                 visible: true,
+				click: ''
             },
             {
                 label: 'Login',
@@ -42,6 +43,7 @@ export default {
                 route: '/login',
                 name: 'login',
                 visible: false,
+				click: ''
             },
             {
                 label: 'Signup',
@@ -51,6 +53,7 @@ export default {
                 route: '/signup',
                 name: 'signup',
                 visible: false,
+				click: ''
             }
             ],
             itemsOut: [
@@ -62,6 +65,7 @@ export default {
                 hash: 'home',
                 name: '/',
                 visible: true,
+				click: ''
             },        
             {
                 label: 'Logout',
@@ -82,7 +86,7 @@ export default {
         ...mapActions({
             handleLogoutAPI: "auth/handleLogoutAPI"}),
 
-        navigate(to){
+        navigate(to: any){
             this.$router.push(to);
         },
         async logoutHandle(){
@@ -106,6 +110,7 @@ export default {
             catch(err){
                 console.error("[TheMenuComponent.logutHandle]", err);
             }
+			//@ts-ignore
             this.$swal.fire(swalOpt);
         
         }

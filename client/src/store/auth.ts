@@ -12,17 +12,17 @@ const authModule = {
     },
     mutations: {
         // Mutations to modify state
-        setAuthenticated(state, payload){
+        setAuthenticated(state: any, payload: any){
             state.isAuthenticated = payload;
         },
 
-        setToken(state, payload){
+        setToken(state: any, payload: any){
             state.token = payload;
         }
         
     },
     actions: {
-        async handleLoginAPI({commit, dispatch}, payload){
+        async handleLoginAPI({commit, dispatch}: any, payload: any){
             let logged = null;
             try{ 
                 // debugger
@@ -45,7 +45,7 @@ const authModule = {
             }
         },
         
-        async handleSignupAPI(store, payload){
+        async handleSignupAPI(store: any, payload: any){
             let signed = null;
             try{ 
                 debugger
@@ -60,7 +60,7 @@ const authModule = {
             }
         },
         
-        async handleLogoutAPI({dispatch, commit}){
+        async handleLogoutAPI({dispatch, commit}: any){
             let logged = null;
             try{ 
                 //debugger;
@@ -85,7 +85,7 @@ const authModule = {
         async callVerifyAPI(){
             return await instance.get("/api/validate-token");
         },
-        async verifyToken ({commit,dispatch}) {
+        async verifyToken ({commit,dispatch}: any) {
             
             let isValid = false
             
@@ -120,7 +120,7 @@ const authModule = {
             return isValid;
         },
         
-        setAuthCookie(store, payload){
+        setAuthCookie(store: any, payload: any){
             Cookies.set("auth", payload.replace('Bearer ', ''), {expires: 1 });
         },        
         unsetAuthCookie(){
@@ -131,11 +131,14 @@ const authModule = {
             return false;
         },
         
-        setAuthHeader(store, payload = null){
-            if(!payload && !Cookies.get("auth")) return false;
+        setAuthHeader(store: any, payload = null){
+			const cookieAuth = Cookies.get("auth");
+            if(!payload && !cookieAuth) return false;
             
             const cookieToken = (payload) ? payload : Cookies.get("auth");
             
+			if(!cookieToken) return false;
+
             instance.defaults.headers.common.Authorization = 'Bearer ' + cookieToken.replace('Bearer ', '');
             
             return true;
@@ -148,7 +151,7 @@ const authModule = {
             }
             return false;
         },
-        async getTokenData({dispatch}){
+        async getTokenData({dispatch}: any){
             try { 
                 const validate = await dispatch("callVerifyToken");
                 if(validate.headers.authorization) {
@@ -165,7 +168,7 @@ const authModule = {
     },
     getters: {
         // Getters to compute derived state
-        getAuthenticationStatus(state){
+        getAuthenticationStatus(state: any){
             return state.isAuthenticated;
         }
     }

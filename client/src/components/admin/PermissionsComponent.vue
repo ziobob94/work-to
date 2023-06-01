@@ -211,7 +211,7 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
 import { mapActions, mapState } from 'vuex';
 export default {
     name: "PermissionsComponent",
@@ -233,7 +233,7 @@ export default {
             permissionDialogToggle: false,
             rolesDialogToggle: false,
             dialogType: 'new',
-            saveFunction: null,  
+            saveFunction: async () => {},  
 			rolesSelected: null,
 			permissionsSelected: null          
         }
@@ -310,7 +310,7 @@ export default {
 			this.rolesDialogToggle = true;
 
         },
-        async editPermissionAPI(){
+        async editPermission(){
             const swalOpt = {
                     title: "Fail",
                     text: "Edit Permission ",
@@ -320,7 +320,7 @@ export default {
             }
             try{
 
-                let ret = {
+                let ret : any =  {
                     result: false,
                     message: "Save permission",
                     code: 500
@@ -346,7 +346,7 @@ export default {
                 swalOpt.text += 'Fail: server error';
                 swalOpt.icon = 'error';
             }
-
+			//@ts-ignore
             this.$swal.fire(swalOpt);
         },
         async deletePermissionAPI(){
@@ -420,14 +420,14 @@ export default {
             this.dialogType =  (this.permissionsSelected) ? 'edit' : 'new';
             this.permissionDialogToggle = open;
         },
-        setItem(t){
+        setItem(t: any){
             console.log("t", t)
         },
         clearSearch(){
             this.permissionsSelected = null;
         },
-        getItems(el, type = 'perm'){
-            let a = [];
+        getItems(el: any, type = 'perm'){
+            let a : any = [];
             let keys = (type === 'perm') ? ['name', 'slug'] : [];
             keys.forEach(k => {
                 a.push({title: k, value: el[k]})
@@ -435,7 +435,7 @@ export default {
             return a;
         },
         async saveHandler(){
-            await this.saveFunction();
+			await this.saveFunction();
         }
     }
 }

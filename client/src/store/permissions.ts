@@ -4,25 +4,25 @@ const permissionsModule = {
 	namespaced: true,
 	state: {
 		permissionsValues: null,
-		rolesValues: null
+		rolesValues: null,
 	},
 	getters: {
 	},
 	mutations: {
-		setPermissionsValues(state, payload){
+		setPermissionsValues(state: any, payload: any){
 			state.permissionsValues = payload;
 		},
-		setRolesValues(state, payload){
+		setRolesValues(state: any, payload: any){
 			state.rolesValues = payload;
 		}
 	},
 	actions: {
-		async init({dispatch}){
+		async init({dispatch}: any){
 			await dispatch("fetchRoles");
 			await dispatch("fetchPermissions");
 		},
-		async savePermissionsAPI(store, payload){
-			let ret = {
+		async savePermissionsAPI(store: any, payload: any){
+			let ret : any = {
 				result: false,
 				message: "Save permission",
 				code: 500
@@ -37,21 +37,22 @@ const permissionsModule = {
 					return d.data;
 				}
 			}
-			catch(err){
+			catch(err: any){
 				console.warn("[permissions.savePermissionsAPI] ERORR: ", err.message);
 			}
 			return ret;
 		},
-		async editPermissionAPI(){
-			let ret = {
+		async editPermissionAPI(payload: any ){
+			let ret : any = {
 				result: false,
 				message: "Save permission",
-				code: 500
+				code: 500,
+
 			}
 
 			try{
 				
-				ret = await instance.put("/api/admin/permissions", [this.tempPermission]);
+				ret = await instance.put("/api/admin/permissions", payload);
 				
 				if(ret.data.result) {				
 					const d = ret.data;
@@ -61,20 +62,20 @@ const permissionsModule = {
 
 
 			}
-			catch(err){
+			catch(err: any){
 				console.warn("[permissions.editPermissionAPI] ERORR: ", err.message);
 			}
 		},
-		async deletePermissionAPI(){
+		async deletePermissionAPI(payload: any){
 
-			let ret = {
+			let ret : any = {
 				result: false,
 				message: "Save permission",
 				code: 500
 			}
 			
 			try{                
-				ret = await instance.delete(`/api/admin/permissions/${this.tempPermission._id}`);
+				ret = await instance.delete(`/api/admin/permissions/${payload._id}`);
 
 				if(ret.data.result) {
 					const d = ret.data;
@@ -83,15 +84,15 @@ const permissionsModule = {
 				}
 				
 			}
-			catch(err){
+			catch(err: any){
 				console.warn("[permissions.deletePermission] ERROR :", err.message);
 			}
 
 			return ret;
 
 		},
-		async saveRoleAPI(store, payload){
-			let ret = {
+		async saveRoleAPI(store: any, payload: any){
+			let ret : any = {
 				result: false,
 				message: "Save permission",
 				code: 500
@@ -106,14 +107,14 @@ const permissionsModule = {
 				}
 
 			}  
-			catch(err){
+			catch(err: any){
 				console.warn("[permissions.saveRoleAPI] ERROR :", err.message);
 			}
 			return ret;
 		},
-		async fetchPermissions({commit}){
+		async fetchPermissions({commit}: any){
 			try{
-				let ret = {
+				let ret : any = {
 					result: false,
 					message: "Save permission",
 					code: 500
@@ -128,18 +129,18 @@ const permissionsModule = {
 					return d.data;
 				}
 			}
-			catch(err){
+			catch(err: any){
 				console.warn("[permissions.fetchPermissions] ERROR: ", err.message);
 			}
 			commit("setPermissionsValues", null);
 		},
 		async fetchRoles({commit} : any){
 			try{
-				let ret = {
+				let ret : any = {
 					result: false,
 					message: "Save roles ",
 					code: 500
-					
+
 				}
 				ret = await instance.get("/api/admin/roles");
 
@@ -152,7 +153,7 @@ const permissionsModule = {
 
 				return false;
 			}
-			catch(err){
+			catch(err: any){
 				return null;
 			}
 		}
