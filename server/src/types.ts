@@ -28,7 +28,10 @@ export type ApiReturn = {
     error?: any
 }
 
-
-export interface PermissionReq extends Omit<IPermission, 'roleID'> {
+/**
+ * THE TYPE FOR THE AGGREGATION BY ROLE FOR "IPermission" 
+ * GROUPED BY PERMISSION AND ROLE ALL PERMISSIONS AND SAVES ROLES IN THE "rolesIDS"
+ */
+export interface PermissionAPI extends Omit<IPermission, 'roleID'> {
     rolesIDS: IRole[]
 }

@@ -5,6 +5,8 @@ import { ApiReturn, IUser } from '../../types';
 import { MongoMangerClass } from '../../lib/MongoManagerClass';
 import { insertUser } from '../../models/userModel';
 import * as messages from "../../messages.json"
+import { Request,Response } from "express";
+import { getUserPermissions } from '../../models/permissionModel';
 
 
 
@@ -28,10 +30,15 @@ async function loginHelper(req: any) : Promise<ApiReturn> {
             return {result: false, code:400,  message: messages["50024"] };
         }
         
+
+        const permissions : ApiReturn = await getUserPermissions(user.roleID);
+
         // Create the payload for the JWT
         const payload = {
             sub: user._id,
             email: user.email,
+            role: user.roleID,
+            permissions
         };
         
         // Sign the JWT with the secret key and set an expiration time
@@ -56,7 +63,7 @@ async function hashPassword(password: string): Promise<string> {
 }
 
 
-async function registerHelper(req: any, res: any, db: MongoMangerClass): Promise<ApiReturn>{
+async function registerHelper(req: Request, res: Response): Promise<ApiReturn>{
     console.log("[routes.auth.bindAuthRoutes] ROURTE -> /regiter");
     
     let userInserted : ApiReturn = {result: false, message: messages["50003"], code: 500 };
@@ -86,24 +93,22 @@ async function registerHelper(req: any, res: any, db: MongoMangerClass): Promise
     return userInserted; 
 }
 
-//TODO: implementare validatione 
-export async function tokenValidationCallback(req: any): Promise<ApiReturn> {
+export async function tokenValidationCallback(): Promise<ApiReturn> {
     const ret : ApiReturn = {
         result: true,
         message: "ok",
         code: 200
     }
     return ret;
-    
 }
 
-export async function registrationCallback (req: any,res: any, db: MongoMangerClass) {
-    const regRes : ApiReturn = await registerHelper(req, res, db);
+export async function registrationCallback (req: Request,res: any) {
+    const regRes : ApiReturn = await registerHelper(req, res);
     res.statusCode = regRes.code;
     res.json(regRes);
 }
 
-export async function loginCallback (req: any, res: any){
+export async function loginCallback (req: Request, res: Response){
     const logRes: ApiReturn = await loginHelper(req); 
     if(logRes.result) res.set('Authorization', 'Bearer ' + logRes.data);
     // res.cookie('auth', logRes.data, { maxAge: 3600000, httpOnly: true });
@@ -119,7 +124,7 @@ export async function validateCallback (req: any,res: any) {
         code: 500
     }
     try{
-        const isValid = await tokenValidationCallback(req);
+        const isValid = await tokenValidationCallback();
         if(isValid.result && req.headers.authorization) {
             res.setHeader('Authorization', 'Bearer ' + req.headers.authorization.replace("Bearer ", ''));
             response = isValid;
@@ -134,7 +139,7 @@ export async function validateCallback (req: any,res: any) {
     return res.json(response);}
 
 
-export async function logoutCallback(req, res) {
+export async function logoutCallback(req: Request, res: Response) {
     const response : ApiReturn = {
         result: false,
         message: messages["50033"],

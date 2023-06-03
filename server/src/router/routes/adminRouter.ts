@@ -3,6 +3,7 @@ import express, { Router } from "express";
 import { createPermissions, getAllPermissionsCallback, deletePermissionCallback, updatePermissionCallback } from "../../controllers/admin/permissionsController";
 import { createRoles, getAllRolesCallback } from "../../controllers/admin/rolesController";
 import passport from "passport";
+import { Request,Response } from "express";
 
 const adminRouter : Router = express.Router();
 
@@ -22,7 +23,7 @@ adminRouter.use("/admin", passport.authenticate('jwt', {session: false}),
  
 } );
 
-async function getAdminCallback(req, res) {
+async function getAdminCallback(req: Request, res: Response) {
     return res.json(true);
 }
 
@@ -48,7 +49,7 @@ adminRouter.put("/admin/permissions", updatePermissionCallback);
 /** 
  * DELETE MULTIPLE PERMISSIONS 
 */
-adminRouter.delete("/admin/permissions/:id", deletePermissionCallback);
+adminRouter.post("/admin/permissions/:id", deletePermissionCallback);
 
 /**
  * Roles

@@ -50,7 +50,7 @@ const authModule = {
             try{ 
                 debugger
                 signed = await instance.post("/api/register", payload );
-                return signed;
+                return signed.data;
             }
             catch(err){
                 console.error("[SignupFormComponent] ERROR: ", err);

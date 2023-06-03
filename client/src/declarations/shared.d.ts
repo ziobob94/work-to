@@ -12,6 +12,7 @@ export declare type CustomState =
 	PermissionState |
 	AuthState
 
+	
 
 export declare interface RootState {
 	modules: {
@@ -23,3 +24,15 @@ export declare interface RootState {
 
 
   
+export declare interface SharedModule {
+	swalOptions: SweetAlertOptions,
+	toggleSwal: boolean
+}
+
+
+
+declare module 'vuex' {
+	interface Store<S> {
+		state: S & SharedModule;
+	}
+}

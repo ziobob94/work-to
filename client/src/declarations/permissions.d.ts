@@ -1,4 +1,4 @@
-import { PermissionsState } from '@/mylib';
+import { PermissionsState } from '@/shared';
 
 export declare interface PermissionsState {
 		permissionsValues: any[],

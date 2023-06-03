@@ -8,6 +8,7 @@ import adminRouter from '../router/routes/adminRouter';
 import autheticationRouter from '../router/routes/authenticationRouter';
 dotenv.config();
 import path from 'path';
+import compression from 'compression';
 /* 
 export class ServerClass{
     
@@ -114,9 +115,12 @@ const mdb : MongoMangerClass = new MongoMangerClass();
 
 let server: Express = express();
 
-function setRouter(){
-    
+function  setDefautlHeaders (req: Request, res: Response, next) {
+    res.setHeader('Cache-Control', 'max-age=36000');
+    next();
+}
 
+function setRouter(){
     server.use("/", autheticationRouter);
     server.use("/", adminRouter);
 
@@ -129,7 +133,13 @@ function setRouter(){
 
     if(process.env.MODE === "production" ) {
         const p = process.env.CLIENT_INDEX_PATH;
-        server.get("/", (req,res) => res.sendFile(path.resolve(p))); // Replace 'index.html' with the path to your web page file
+        const a = path.resolve(p);
+        server.use(express.static(p));
+        server.get('*', (req: Request, res: Response) => {
+            res.sendFile(path.join(p, 'index.html'));
+          });
+          
+        // server.get("/", (req,res) => res.sendFile(a)); // Replace 'index.html' with the path to your web page file
     }
 
     
@@ -161,6 +171,7 @@ async function init() {
         const corsInstance = initializeCors();
 
         app.use(corsInstance);
+        app.use(compression())
 
         app.use(bodyParser.json());
         
@@ -168,6 +179,8 @@ async function init() {
 
         server.use(passport.initialize());            
         
+        //server.use(setDefautlHeaders);
+
         setRouter();
         
         server.listen(port);

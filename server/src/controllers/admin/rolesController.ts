@@ -1,7 +1,10 @@
 import { ApiReturn, IRole} from "../../types"
 import { getAllRole, insertRole } from "../../models/roleModel";
+import {
+    Request, Response
+} from "express";
 
-export async function createRoles( req: any, res: any): Promise<ApiReturn>{
+export async function createRoles( req: Request, res: Response): Promise<Response<any, Record<string, any>>>{
     console.log("[routes.auth.bindAuthRoutes] ROURTE -> /regiter");
     
     let roleCreated : ApiReturn = {result: false, message: "Signup Failed", code: 500 };
@@ -13,7 +16,7 @@ export async function createRoles( req: any, res: any): Promise<ApiReturn>{
             res.statusCode = 409;
             res.statusMessage = "REQUEST_FOR_EMPTY_USER";
             roleCreated.message = "Missing data";
-            return roleCreated;
+            return res.json(roleCreated); 
         }
         
         roleCreated = await createHelper(perms);
@@ -48,7 +51,7 @@ export async function createRoles( req: any, res: any): Promise<ApiReturn>{
     return resp;
 }
 
-export async function getAllRolesCallback(req, res){
+export async function getAllRolesCallback(req: Request, res: Response): Promise<Response<any, Record<string, any>>> {
     let resp : ApiReturn = {
         result: false,
         message: "Read all role ",
@@ -58,8 +61,6 @@ export async function getAllRolesCallback(req, res){
     resp = await getAllRole();
     
     return res.json(resp); 
-
-    return resp;
 }
 
 export async function readRoles(rolesSlugs: string[], roleID = ""){
@@ -71,22 +72,22 @@ export async function readRoles(rolesSlugs: string[], roleID = ""){
     return resp;
 }
 
-export async function updateRoles(roles: IRole[]){
+export async function updateRoles(req: Request, res: Response): Promise<Response<any, Record<string, any>>>{
     const resp : ApiReturn = {
         result: false,
         message: "Update role ",
         code: 50004
     }
-    return resp;
+    return res.json(resp);
 }
 
-export async function deleteRoles(){
+export async function deleteRoles(req: Request, res: Response) : Promise<Response<any, Record<string, any>>>{
     const resp : ApiReturn = {
         result: false,
         message: "Delete role ",
         code: 50005
     }
-    return resp;
+    return res.json(resp);
 }
 
 

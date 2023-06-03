@@ -1,7 +1,6 @@
-import { PermissionModel } from "../databaseModels";
-
+import { Request,Response } from "express";
 export function checkPermission () {
-  return (req, res, next) => {
+  return (req: Request, res: Response, next) => {
     
     console.log("MDDLE")
 /*     PermissionModel.find({"slug": permission});

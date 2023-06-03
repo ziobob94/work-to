@@ -6,12 +6,14 @@ import jwt from 'jsonwebtoken'; */
 import userModule from './user';
 import authModule from './auth';
 import permissionsModule from './permissions';
-import { RootState } from '@/mylib';
+import { RootState } from '@/declarations/shared';
+import sharedModule from './shared';
 
 
 const store : Store<RootState> = createStore(
 	{
 		modules:{
+			shared: sharedModule,
 			auth: authModule,
 			user: userModule,
 			permissionsAd: permissionsModule

@@ -1,20 +1,21 @@
-import { ApiReturn, PermissionReq, IPermission, IRole } from "../../types";
+import { Request, Response } from 'express';
+import { ApiReturn, PermissionAPI, IPermission, IRole } from "../../types";
 import { getAllPermission, insertPermission, deletePermission, updatePermission } from "../../models/permissionModel";
 import * as _ from 'lodash';
 
-export async function createPermissions( req: any, res: any): Promise<ApiReturn>{
+export async function createPermissions( req: Request, res: Response): Promise<Response<any, Record<string, any>>>{
     console.log("[routes.auth.bindAuthRoutes] ROURTE -> /regiter");
     
     let permissionCreated : ApiReturn = {result: false, message: "Signup Failed", code: 500 };
     
     try {
-        const perms: PermissionReq[] = req.body;
+        const perms: PermissionAPI[] = req.body;
         
         if(!perms || Object.keys(perms).length === 0 ) {
             res.statusCode = 409;
             res.statusMessage = "REQUEST_FOR_EMPTY_USER";
             permissionCreated.message = "Missing data";
-            return permissionCreated;
+            return res.json(permissionCreated);
         }
         
         permissionCreated = await createHandler(perms);
@@ -27,7 +28,7 @@ export async function createPermissions( req: any, res: any): Promise<ApiReturn>
     return res.json(permissionCreated); 
 }
 
- async function createHandler (permissions: PermissionReq[]): Promise<ApiReturn>{
+ async function createHandler (permissions: PermissionAPI[]): Promise<ApiReturn>{
     const resp : ApiReturn = {
         result: false,
         message: "",
@@ -36,7 +37,7 @@ export async function createPermissions( req: any, res: any): Promise<ApiReturn>
 
     if(permissions?.length > 0) {
         const len: number = permissions.length;
-        let perm : PermissionReq = null;
+        let perm : PermissionAPI = null;
         for(let i = 0; i < len; i++){
             perm = permissions[i];
 
@@ -64,7 +65,7 @@ export async function createPermissions( req: any, res: any): Promise<ApiReturn>
     return resp;
 }
 
-export async function getAllPermissionsCallback(req, res){
+export async function getAllPermissionsCallback(req: Request, res: Response) : Promise<Response<any, Record<string, any>>> {
     let resp : ApiReturn = {
         result: false,
         message: "Read all permission ",
@@ -76,7 +77,7 @@ export async function getAllPermissionsCallback(req, res){
 
 }
 
-export async function readPermissions(permissionsSlugs: string[], roleID = ""){
+export async function readPermissions(permissionsSlugs: string[], roleID = ""): Promise<ApiReturn> {
     const resp : ApiReturn = {
         result: false,
         message: "Read permission ",
@@ -86,18 +87,19 @@ export async function readPermissions(permissionsSlugs: string[], roleID = ""){
 }
 
 
-export async function updatePermissionCallback( req: any, res: any): Promise<ApiReturn>{
-    console.log("[routes.auth.bindAuthRoutes] ROURTE -> /regiter");
+export async function updatePermissionCallback( req: Request, res: Response): Promise<Response<any, Record<string, any>>>{
+    console.log("[routes.auth.bindAuthRoutes] ROURTE -> /permission");
     
     let permissionUpdated : ApiReturn = {result: false, message: "Signup Failed", code: 500 };
     
     try {
-        const perms: IPermission[] = req.body;
+        const perms: PermissionAPI[] = req.body;
         
         if(!perms || Object.keys(perms).length === 0 ) {
             res.statusCode = 409;
             res.statusMessage = "REQUEST_FOR_EMPTY_USER";
             permissionUpdated.message = "Missing data";
+            return res.json(permissionUpdated);
         }
         else permissionUpdated = await updatePermissionHandler(perms);
     }
@@ -109,7 +111,7 @@ export async function updatePermissionCallback( req: any, res: any): Promise<Api
     return res.json(permissionUpdated); 
 }
 
- async function updatePermissionHandler (permissions: IPermission[]): Promise<ApiReturn>{
+ async function updatePermissionHandler (permissions: PermissionAPI[]): Promise<ApiReturn>{
     const resp : ApiReturn = {
         result: false,
         message: "Creation permission ",
@@ -118,7 +120,7 @@ export async function updatePermissionCallback( req: any, res: any): Promise<Api
 
     if(permissions?.length > 0) {
         const len: number = permissions.length;
-        let perm : IPermission = null;
+        let perm : PermissionAPI = null;
         for(let i = 0; i < len; i++){
             perm = permissions[i];
             await updatePermission(perm);
@@ -132,18 +134,25 @@ export async function updatePermissionCallback( req: any, res: any): Promise<Api
 }
 
 
-export async function deletePermissionCallback(req, res){
-    let resp : ApiReturn = {
+export async function deletePermissionCallback(req: Request, res: Response) : Promise<Response<any, Record<string, any>>>{
+    const resp : ApiReturn = {
         result: false,
         message: "Delete permission ",
         code: 50005
     }
 
-    const id = req.params.id;
-
+    const perms : PermissionAPI[] = req.body;
+    let r = null;
+    const notSaved : PermissionAPI[] = [];
     
-    resp = await deletePermission(id);
+    perms.forEach(async (perm) => {
+        r = await deletePermission(perm);
+        if(!r.result) notSaved.push(perm)
+    })
     
+    resp.result = true;
+    resp.message = (notSaved.length > 0 ) ? "Deleted with errors" : "Delelte success";
+    resp.code = (notSaved.length > 0 ) ? 200 : 202;
     return res.json(resp); 
 
 }

@@ -1,7 +1,7 @@
-import { ApiReturn } from "../types";
+import { ApiReturn, IRole } from "../types";
 import { RoleModel } from "../databaseModels";
 
-export async function insertRole(role: any) : Promise<ApiReturn> {
+export async function insertRole(role: IRole) : Promise<ApiReturn> {
 
     try {
         const created = await RoleModel.create(role);
@@ -21,7 +21,7 @@ export async function insertRole(role: any) : Promise<ApiReturn> {
 export async function getAllRole() : Promise<ApiReturn> {
 
     try {
-        const values = await RoleModel.find({});
+        const values : IRole[] = await RoleModel.find({});
         if (values) {
             console.log('Roles got');
             return {result: true, message: "Roles got successfully", code: 200, data: values};

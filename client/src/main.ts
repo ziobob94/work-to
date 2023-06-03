@@ -3,9 +3,9 @@ import App from './App.vue';
 import router  from './router/router';
 import axios from 'axios';
 import VueSweetalert2 from 'vue-sweetalert2';
-import 'sweetalert2/dist/sweetalert2.min.css';
 import store from './store/store';
 import 'vuetify/styles'
+import 'sweetalert2/dist/sweetalert2.min.css';
 import 'font-awesome/css/font-awesome.min.css' // Ensure your project is capable of handling css files
 import { createVuetify } from 'vuetify'
 import { aliases, fa } from 'vuetify/iconsets/fa4'
@@ -27,10 +27,13 @@ const vuetify = createVuetify({
   }
 })
 
-
-
 export const instance = axios.create({
   timeout: 50000, // Request timeout in milliseconds
+  headers: {
+    'Content-Type': 'application/json',
+    //'Accept-Encoding': 'gzip, deflate',
+    // Add any other headers you need
+  },
 });
 
 

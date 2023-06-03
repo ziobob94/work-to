@@ -8,7 +8,7 @@ export async function insertUser(user: any) : Promise<ApiReturn> {
         const created = await UserModel.create(user);
         if (created) {
             console.log('User created successfully:', user);
-            return {result: true, message: messages["50001"], code: 200};
+            return {result: true, message: messages["50000"], code: 200, data: created};
         }
         else return {result: false, message: messages["50002"], code: 401};
     }

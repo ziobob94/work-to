@@ -1,7 +1,9 @@
 <template>
 	<div class="w-100 mx-4 my-8 d-flex flex-column ">
 		<v-autocomplete
-		v-model="permissionsSelected"
+		color="primary"
+		variant="outlined" 
+		v-model="permissionSelected"
 		:items="permissionsValues"
 		chips
 		clearable
@@ -35,7 +37,7 @@
 		<v-card>
 			<v-form >
 				<v-container>
-					<h2 class="mb-4">{{ (!permissionsSelected) ? 'Create new permission' : 'Edit permission'}}</h2>
+					<h2 class="mb-4">{{ (!permissionSelected) ? 'Create new permission' : 'Edit permission'}}</h2>
 					<v-row>
 						<v-col
 						cols="12"
@@ -45,6 +47,8 @@
 						v-model="tempPermission.name"
 						label="Permission name"
 						required
+						color="primary"
+						variant="outlined" 
 						></v-text-field>
 					</v-col>
 					
@@ -53,6 +57,8 @@
 					md="4"
 					>
 					<v-text-field
+					color="primary"
+					variant="outlined" 
 					v-model="tempPermission.slug"
 					label="Permission slug"
 					required
@@ -70,6 +76,8 @@
 			md="4"
 			>
 			<v-text-field
+			color="primary"
+			variant="outlined" 
 			v-model="tempPermission.description"
 			label="Permission description"
 			required
@@ -84,6 +92,8 @@
 	
 	
 	<v-autocomplete
+	color="primary"
+	variant="outlined" 
 	clearable
 	chips
 	label="Select Roles"
@@ -103,7 +113,7 @@
 <v-card-actions>
 	<v-btn color="primary" block @click="saveHandler">Save</v-btn>
 </v-card-actions>
-<v-card-actions v-if="permissionsSelected">
+<v-card-actions v-if="permissionSelected">
 	<v-btn color="primary" block @click="deletePermission">Delete</v-btn>
 </v-card-actions>
 <v-card-actions>
@@ -130,6 +140,8 @@ width="100%"
 				v-model="newRole.name"
 				label="Role name"
 				required
+				color="primary"
+				variant="outlined" 
 				></v-text-field>
 			</v-col>
 			
@@ -141,6 +153,8 @@ width="100%"
 			v-model="newRole.role"
 			label="Role ID"
 			required
+			color="primary"
+			variant="outlined" 
 			></v-text-field>
 		</v-col>
 		
@@ -166,7 +180,7 @@ width="100%"
 		<v-btn class="d-flex justify-start w-100 mb-2" 
 		@click="setPemissionForDialog(true)" 
 		prepend-icon="fas fa-plus" > 
-		{{(!permissionsSelected) ? 'Add Permission' : 'Edit Permission' }}
+		{{(!permissionSelected) ? 'Add Permission' : 'Edit Permission' }}
 	</v-btn>
 </div>
 <div class="w-100 d-flex justify-center text-center">
@@ -174,13 +188,13 @@ width="100%"
 </div>
 </div>
 
-<div v-if="permissionsSelected" class="w-100 p-2 d-flex flex-column">
+<div v-if="permissionSelected" class="w-100 p-2 d-flex flex-column">
 	<div id="first" class="d-flex mb-4">
 		<v-list class="w-100 d-flex justify-space-between flex-column">
 			<v-list-subheader>PERMISSION</v-list-subheader>
 			
 			<v-list-item
-			v-for="(item, i) in getItems(permissionsSelected, 'perm')"
+			v-for="(item, i) in getItems(permissionSelected, 'perm')"
 			:key="i"
 			:value="item"
 			>
@@ -197,7 +211,7 @@ width="100%"
 		<v-list-subheader>ROLES</v-list-subheader>
 		
 		<v-list-item
-		v-for="(item, i) in permissionsSelected.rolesIDS"
+		v-for="(item, i) in permissionSelected.rolesIDS"
 		:key="i"
 		:value="item"
 		>
@@ -214,8 +228,8 @@ width="100%"
 <script lang="ts">
 import { mapActions, mapState } from 'vuex';
 import { defineComponent } from 'vue';
-import { ApiReturn } from '@/mylib';
-import { PermissionValue } from '@/permissions';
+import { PermissionValue } from '@/declarations/permissions';
+import { ApiReturn } from '@/declarations/shared';
 export default defineComponent({
 	name: "PermissionsComponent",
 	components: {
@@ -238,7 +252,7 @@ export default defineComponent({
 			dialogType: 'new',
 			saveFunction: async () => {},  
 			rolesSelected: [],
-			permissionsSelected: null   
+			permissionSelected: null   
 		}
 	},
 	computed:{
@@ -253,12 +267,13 @@ export default defineComponent({
 			saveRoleAPI: 'permissionsAd/saveRoleAPI',
 			deletePermissionAPI: 'permissionsAd/deletePermissionAPI',
 			editPermissionAPI: 'permissionsAd/editPermissionAPI',
+			swalFire: 'shared/swalFire',
 		}),
 		async init(){
 			await this.fetchPermissions();
 			await this.fetchRoles();
 			this.rolesSelected = [];
-			this.permissionsSelected = null;
+			this.permissionSelected = null;
 			this.dialogType = 'new';
 			this.newRole = {
 				name: "",
@@ -273,24 +288,24 @@ export default defineComponent({
 		},
 		async savePermission(){
 			const text = "Save Permission ";
-
+			
 			const ret = await this.savePermissionsAPI([this.tempPermission]);
-
+			
 			this.fireSwal(ret,text);
 		},
 		async editPermission(){
 			const text = "Edit Permission ";
- 
-			let ret : ApiReturn = await this.editPermissionAPI("/api/admin/permissions", [this.tempPermission]);
-
+			
+			let ret : ApiReturn = await this.editPermissionAPI([this.tempPermission]);
+			
 			this.fireSwal(ret, text)
 		},
 		//@ts-ignore
-		async deletePermissionAPI(){
+		async deletePermission(){
 			const text = "Delete Permission ";
-				
-			let ret = await this.deletePermissionAPI();
-
+			
+			let ret = await this.deletePermissionAPI([this.permissionSelected]);
+			
 			await this.fireSwal(ret, text);
 			
 		},
@@ -300,21 +315,21 @@ export default defineComponent({
 			const ret = await this.saveRoleAPI([this.newRole]);
 			
 			await this.fireSwal(ret, text);
-
+			
 		},
 		setPemissionForDialog(open = false){
 			// eslint-disable-next-line no-debugger
 			// debugger;
-			this.tempPermission = (this.permissionsSelected) ? this.permissionsSelected : this.newPermission;
-			this.saveFunction = (this.permissionsSelected) ? this.editPermission : this.savePermission;
-			this.dialogType =  (this.permissionsSelected) ? 'edit' : 'new';
+			this.tempPermission = (this.permissionSelected) ? this.permissionSelected : this.newPermission;
+			this.saveFunction = (this.permissionSelected) ? this.editPermission : this.savePermission;
+			this.dialogType =  (this.permissionSelected) ? 'edit' : 'new';
 			this.permissionDialogToggle = open;
 		},
 		setItem(t: any){
 			console.log("t", t)
 		},
 		clearSearch(){
-			this.permissionsSelected = null;
+			this.permissionSelected = null;
 		},
 		getItems(el: PermissionValue, type = 'perm'){
 			let a : any = [];
@@ -327,7 +342,7 @@ export default defineComponent({
 		async saveHandler(){
 			await this.saveFunction();
 		},
-		async fireSwal(ret: ApiReturn, text: string) {
+		async fireSwal(ret: ApiReturn, text: string , dialog = "permissions") {
 			const swalOpt = {
 				title: "Fail",
 				text,
@@ -340,13 +355,9 @@ export default defineComponent({
 				swalOpt.title = 'Fail';
 				swalOpt.text += 'Fail: server error';
 				swalOpt.icon = 'error';	
-				this.rolesDialogToggle = false;
-				await this.$swal.fire(swalOpt);
-				this.rolesDialogToggle = true;
 			}
-			
-			
-			if(ret.result) {
+			else {
+				if(ret.result) {
 				this.newRole = {
 					name: "",
 					role: "",
@@ -356,16 +367,26 @@ export default defineComponent({
 				swalOpt.text += 'Success';
 				swalOpt.icon = 'success';
 				
-			}
-			else {
-				swalOpt.title = 'Fail';
-				swalOpt.text += 'Fail';
-				swalOpt.icon = 'warning';
+				}
+				else {
+					swalOpt.title = 'Fail';
+					swalOpt.text += 'Fail';
+					swalOpt.icon = 'warning';
+				}
 			}
 
-			this.rolesDialogToggle = false;
-			await this.$swal.fire(swalOpt);
-			this.rolesDialogToggle = true;
+			if (dialog === "permissions") {
+				this.permissionDialogToggle = !this.permissionDialogToggle
+			}else{
+					this.rolesDialogToggle = !this.rolesDialogToggle
+				}			
+			// await this.$swal.fire(swalOpt);
+			await this.swalFire(swalOpt);
+			if (dialog === "permissions") {
+				this.permissionDialogToggle = !this.permissionDialogToggle
+			}else{
+					this.rolesDialogToggle = !this.rolesDialogToggle
+				}			
 
 		}
 	}

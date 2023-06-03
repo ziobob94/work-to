@@ -1,9 +1,4 @@
 /* eslint-disable no-debugger */
-import HomePageComponent from "@/components/views/HomePageComponent.vue";
-import LoginPageComponent from "@/components/views/LoginPageComponent.vue";
-import SignupPageComponent from "@/components/views/SignupPageComponent.vue";
-import PermissionsPageComponent from "@/components/views/PermissionsPageComponent.vue";
-import ProfilePageComponent from "@/components/views/ProfilePageComponent.vue";
 import { RouteRecordRaw } from "vue-router";
 
 
@@ -16,25 +11,25 @@ export const routes : RouteRecordRaw[] = [
             {
                 name: 'home',
                 path: '/home',
-                component: async () =>  HomePageComponent,
+                component: () => import ("@/components/views/HomePageComponent.vue"),
                 meta: { transitionName: '', requiresAuth: true  },
             },
             {
                 name: 'profile',
                 path: '/profile',
-                component: async () =>  ProfilePageComponent,
+                component:  () => import ("@/components/views/ProfilePageComponent.vue"),
                 meta: { transitionName: '', requiresAuth: true  },
             },
 			{
 				name: 'login',
 				path: '/login',
-				component: async () => LoginPageComponent,
+				component:  () =>  import ("@/components/views/LoginPageComponent.vue"),
 				meta: { transitionName: '' }
 			},
 			{
 				name: 'signup',
 				path: '/signup',
-				component: async () => SignupPageComponent,
+				component: () => import ("@/components/views/SignupPageComponent.vue"),
 				meta: { transitionName: '' }
 			}
         ]
@@ -47,9 +42,10 @@ export const routes : RouteRecordRaw[] = [
 			{
 				name: 'permissions',
 				path: '/admin/permissions',
-				component: async () => PermissionsPageComponent,
+				component:  () =>  import ("@/components/views/PermissionsPageComponent.vue"),
 				meta: { transitionName: '', requiresAuth: true , isAdmin: true },
 			}
         ]
     }
 ]
+

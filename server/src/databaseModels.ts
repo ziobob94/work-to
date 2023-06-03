@@ -72,7 +72,9 @@ const userSchema = new Schema<IUser>({
     required: true,
     trim: false,
   }
-}, {timestamps: true});
+}, {timestamps: true} );
+
+userSchema.index({email: 1}, {unique: true});
 
 const roleSchema = new Schema<IRole>({
   name: {
@@ -108,6 +110,8 @@ const permissionSchema = new Schema<IPermission>({
     required: true
   }
 });
+
+permissionSchema.index({slug: 1, roleID: 1}, {unique: true})
 
 export const UserModel = mongoose.model<IUser>('User', userSchema);
 export const RoleModel = mongoose.model<IRole>('Role', roleSchema);

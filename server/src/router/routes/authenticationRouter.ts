@@ -1,8 +1,7 @@
 // import passport from "../../passport";
-import express, { Router } from "express";
+import express, { Router, Request, Response } from "express";
 import dotenv from 'dotenv';
 import passport from "passport";
-import { mdb } from "../../lib/Server";
 import { registrationCallback, loginCallback, validateCallback, logoutCallback } from "../../controllers/main/authenticationController";
 dotenv.config();
 
@@ -21,9 +20,7 @@ autheticationRouter.get('/logout',
 
 
 autheticationRouter.post('/register', 
-    (req, res) => {
-        registrationCallback(req,res,mdb)
-    }
+    registrationCallback
 );
 
 

@@ -4,6 +4,9 @@ import { instance } from "../main";
 //import Cookies from 'js-cookie';
 import store from "@/store/store";
 import { routes } from './routes';
+import Swal from 'sweetalert2';
+import Cookies from 'js-cookie';
+import { parseJwt } from '@/lib/utils';
 
 
 const router : any = Router.createRouter({
@@ -29,22 +32,44 @@ async function checkAdmnin(){
 }
 
 async function authMiddleware(to: any, from: any, next: any) {
+
+	let isAuthenticated : boolean = false; 
     // Implement your authentication logic
     if (to.meta.requiresAuth ) {
-        const isAuthenticated = await store.dispatch("auth/verifyToken");
-        if (!isAuthenticated) return next({ name: 'login' });
+        isAuthenticated = await store.dispatch("auth/verifyToken");
+        if (!isAuthenticated) {
+			Swal.fire({
+				title: 'Ops..',
+				text: 'Page reserved for logged user, please login',
+				icon: 'warning',
+				confirmButtonText: "Login"
+			})
+			return next({ name: 'login' });
+		}
     } 
     
-    
+	const token = Cookies.get("auth");
+	
+	const parsed = parseJwt(token);
+
+	debugger;
+
     if(to.meta.isAdmin) {
         const isValid = await checkAdmnin();
-        if (!isValid) return next({ name: 'login' })
+        if (!isValid) {
+			Swal.fire({
+				title: 'Ops..',
+				text: 'Reserved admin area',
+				icon: 'warning',
+				confirmButtonText: "Login"
+			})
+			return next({ name: 'login' })
+		}
     }
     
     return next();
 }
 
 router.beforeEach( authMiddleware );
-
 
 export default router;
