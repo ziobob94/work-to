@@ -1,5 +1,5 @@
 import { ApiReturn, IRole } from "../types";
-import { RoleModel } from "../databaseModels";
+import { RoleModel } from "./permissionModel";
 
 export async function insertRole(role: IRole) : Promise<ApiReturn> {
 

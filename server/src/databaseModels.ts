@@ -1,5 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
-import { IPermission, IRole, IUser } from './types';
+import { IUser } from './types';
 
 
 const userSchema = new Schema<IUser>({
@@ -76,48 +76,6 @@ const userSchema = new Schema<IUser>({
 
 userSchema.index({email: 1}, {unique: true});
 
-const roleSchema = new Schema<IRole>({
-  name: {
-    type: String,
-    required: true,
-    trim: false,
-  },
-  role: {
-    type: String,
-    required: true,
-    trim: false
-  }
-});
-
-const permissionSchema = new Schema<IPermission>({
-  name: {
-    type: String,
-    required: true,
-    trim: false,
-  },
-  description: {
-    type: String,
-    required: false,
-    trim: false
-  },
-  slug: {
-    type: String,
-    required: true,
-    trim: false
-  },
-  catKey: {
-    type: String,
-    required: true,
-    trim: false
-  },
-  roleID: {
-    type: String,
-    required: true
-  }
-});
-
-permissionSchema.index({slug: 1, roleID: 1}, {unique: true})
-
 export const UserModel = mongoose.model<IUser>('User', userSchema);
-export const RoleModel = mongoose.model<IRole>('Role', roleSchema);
-export const PermissionModel = mongoose.model<IPermission>('Permission', permissionSchema);
+
+

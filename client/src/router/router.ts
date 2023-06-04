@@ -33,6 +33,8 @@ async function checkAdmnin(){
 
 async function authMiddleware(to: any, from: any, next: any) {
 
+	//debugger;
+
 	let isAuthenticated : boolean = false; 
     // Implement your authentication logic
     if (to.meta.requiresAuth ) {

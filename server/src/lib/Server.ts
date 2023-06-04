@@ -9,6 +9,7 @@ import autheticationRouter from '../router/routes/authenticationRouter';
 dotenv.config();
 import path from 'path';
 import compression from 'compression';
+import userRouter from '../router/routes/userRouter';
 /* 
 export class ServerClass{
     
@@ -121,8 +122,10 @@ function  setDefautlHeaders (req: Request, res: Response, next) {
 }
 
 function setRouter(){
+
     server.use("/", autheticationRouter);
     server.use("/", adminRouter);
+    server.use("/", userRouter);
 
     // Error handling middleware
     server.use((err: any, req: Request, res: Response, next: NextFunction) => {

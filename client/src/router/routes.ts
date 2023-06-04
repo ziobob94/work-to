@@ -14,12 +14,6 @@ export const routes : RouteRecordRaw[] = [
                 component: () => import ("@/components/views/HomePageComponent.vue"),
                 meta: { transitionName: '', requiresAuth: true  },
             },
-            {
-                name: 'profile',
-                path: '/profile',
-                component:  () => import ("@/components/views/ProfilePageComponent.vue"),
-                meta: { transitionName: '', requiresAuth: true  },
-            },
 			{
 				name: 'login',
 				path: '/login',
@@ -34,6 +28,27 @@ export const routes : RouteRecordRaw[] = [
 			}
         ]
     }, 
+	{
+		name: 'user',
+		path: '/user/:id',
+		component:  () => import ("@/components/views/ProfilePageComponent.vue"),
+		meta: { transitionName: '', requiresAuth: true  },
+		children: [
+			{
+				name: 'profile',
+				path: 'profile',
+				component:  () => import ("@/components/views/ProfilePageComponent.vue"),
+				meta: { transitionName: '', requiresAuth: true  },
+			},
+			{
+				name: 'posts',
+				path: "posts",
+				component: null,
+				meta: { transitionName: '', requiresAuth: true  },
+			}
+
+		]
+	},
 	{
         path: '/admin',
         redirect: '/admin/permissions',

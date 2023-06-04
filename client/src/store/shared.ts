@@ -38,9 +38,10 @@ const sharedModule : Module<SharedState, any> = {
 			const token = Cookies.get("auth");
 			if(!token) return null;
 			const parsed = parseJwt(token);
-			// eslint-disable-next-line no-debugger
-			//debugger;
 			if(parsed) {
+				// eslint-disable-next-line no-debugger
+				//debugger;
+
 				if(field) return parsed[field];
 				else return parsed;
 			}
@@ -67,6 +68,18 @@ const sharedModule : Module<SharedState, any> = {
 			}
 			const perms = await dispatch("extractJwtData", 'permissions' );
 			return perms.map((el: any) => el.slug);
+		},
+		async getUserLoggedData({dispatch,rootState}, payload) : Promise<string[]>{
+			const authState = rootState.auth;
+			let isAuth = authState.isAuthenticated;
+			if(!isAuth) {
+				isAuth = await store.dispatch("auth/verifyToken");
+				if(!isAuth) return [];
+			}
+			const user = await dispatch("extractJwtData");
+			// eslint-disable-next-line no-debugger
+			// debugger;
+			return user[payload];
 		}
     }
 }

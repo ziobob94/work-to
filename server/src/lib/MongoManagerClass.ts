@@ -2,9 +2,7 @@
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import MongoStore from "connect-mongo";
-import { PermissionModel, UserModel } from '../databaseModels';
 import { sleep } from '../utils';
-import { ApiReturn } from '../types';
 
 
 export class MongoMangerClass{

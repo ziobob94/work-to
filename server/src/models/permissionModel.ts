@@ -1,6 +1,75 @@
-import { ApiReturn, IPermission, PermissionAPI } from "../types";
-import { PermissionModel } from "../databaseModels";
+import { ApiReturn, IPermission, IRole, PermissionAPI } from "../types";
+import mongoose, { Schema } from 'mongoose';
 
+/**
+ * SCHEMA DEFINITION
+ */
+
+/**
+ * PERMISSIONS
+ */
+const permissionSchema = new Schema<IPermission>({
+  name: {
+    type: String,
+    required: true,
+    trim: false,
+  },
+  description: {
+    type: String,
+    required: false,
+    trim: false
+  },
+  slug: {
+    type: String,
+    required: true,
+    trim: false
+  },
+  catKey: {
+    type: String,
+    required: true,
+    trim: false
+  },
+  roleID: {
+    type: String,
+    required: true
+  }
+});
+
+permissionSchema.index({slug: 1, roleID: 1}, {unique: true})
+
+export const PermissionModel = mongoose.model<IPermission>('Permission', permissionSchema);
+
+/**
+ * ROLES
+ */
+
+const roleSchema = new Schema<IRole>({
+  name: {
+    type: String,
+    required: true,
+    trim: false,
+  },
+  role: {
+    type: String,
+    required: true,
+    trim: false
+  }
+});
+
+export const RoleModel = mongoose.model<IRole>('Role', roleSchema);
+
+
+
+
+/**
+ * CRUD FUNCTIONS 
+ */
+
+/**
+ * 
+ * @param permission 
+ * @returns 
+ */
 export async function insertPermission(permission: IPermission ) : Promise<ApiReturn> {
   try {
     permission.catKey = permission.slug;

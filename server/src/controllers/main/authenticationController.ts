@@ -37,6 +37,7 @@ async function loginHelper(req: any) : Promise<ApiReturn> {
         // Create the payload for the JWT
         const payload = {
             sub: user._id,
+            _id: user._id,
             email: user.email,
             roleID: user.roleID,
             permissions: permissions.data
