@@ -34,6 +34,13 @@ async function getAdminCallback(req: Request, res: Response) {
  * VOID
  */
 adminRouter.get("/admin", getAdminCallback)
+
+
+/**
+ * GET ALL PERMISSIONS
+ */
+adminRouter.get("/permissions", getAllPermissionsCallback);
+
 /**
  * GET ALL PERMISSIONS
  */
@@ -49,7 +56,7 @@ adminRouter.put("/admin/permissions", updatePermissionCallback);
 /** 
  * DELETE MULTIPLE PERMISSIONS 
 */
-adminRouter.post("/admin/permissions/:id", deletePermissionCallback);
+adminRouter.post("/admin/permissions-delete", deletePermissionCallback);
 
 /**
  * Roles

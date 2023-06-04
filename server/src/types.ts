@@ -15,9 +15,10 @@ export interface IUser extends Document {
   }
 export interface IPermission extends Document {
     name: string,
-    descrtiption?: string,
     slug: string,
-    roleID: string
+    description?: string,
+    roleID: string,
+    catKey: string
   }
   
 export type ApiReturn = {

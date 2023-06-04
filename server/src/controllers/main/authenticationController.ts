@@ -2,7 +2,6 @@ import bcrypt from 'bcryptjs';
 import jwt from "jsonwebtoken";
 import { UserModel } from "../../databaseModels";
 import { ApiReturn, IUser } from '../../types';
-import { MongoMangerClass } from '../../lib/MongoManagerClass';
 import { insertUser } from '../../models/userModel';
 import * as messages from "../../messages.json"
 import { Request,Response } from "express";
@@ -33,12 +32,14 @@ async function loginHelper(req: any) : Promise<ApiReturn> {
 
         const permissions : ApiReturn = await getUserPermissions(user.roleID);
 
+        if(!permissions.data) throw("Error: empty permissions");
+
         // Create the payload for the JWT
         const payload = {
             sub: user._id,
             email: user.email,
-            role: user.roleID,
-            permissions
+            roleID: user.roleID,
+            permissions: permissions.data
         };
         
         // Sign the JWT with the secret key and set an expiration time
@@ -102,13 +103,13 @@ export async function tokenValidationCallback(): Promise<ApiReturn> {
     return ret;
 }
 
-export async function registrationCallback (req: Request,res: any) {
+export async function registrationCallback (req: Request,res: Response)  : Promise<Response<any, Record<string, any>>> {
     const regRes : ApiReturn = await registerHelper(req, res);
     res.statusCode = regRes.code;
-    res.json(regRes);
+    return res.json(regRes);
 }
 
-export async function loginCallback (req: Request, res: Response){
+export async function loginCallback (req: Request, res: Response) : Promise<Response<any, Record<string, any>>>{
     const logRes: ApiReturn = await loginHelper(req); 
     if(logRes.result) res.set('Authorization', 'Bearer ' + logRes.data);
     // res.cookie('auth', logRes.data, { maxAge: 3600000, httpOnly: true });
@@ -117,7 +118,7 @@ export async function loginCallback (req: Request, res: Response){
     return res.json(logRes);
 }
 
-export async function validateCallback (req: any,res: any) {
+export async function validateCallback (req: Request,res: Response) : Promise<Response<any, Record<string, any>>> {
     let response : ApiReturn = {
         result: false,
         message: 'Token Validation Error',
@@ -139,7 +140,7 @@ export async function validateCallback (req: any,res: any) {
     return res.json(response);}
 
 
-export async function logoutCallback(req: Request, res: Response) {
+export async function logoutCallback(req: Request, res: Response) : Promise<Response<any, Record<string, any>>> {
     const response : ApiReturn = {
         result: false,
         message: messages["50033"],

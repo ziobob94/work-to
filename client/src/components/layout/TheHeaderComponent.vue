@@ -1,6 +1,6 @@
 <template>
     <v-toolbar class="d-flex justify-space-between" density="comfortable" title="Application">
-        <TheMenuButton/>
+        <TheMenuButton v-if="isAuthenticated"/>
     </v-toolbar>
 </template>
 
@@ -8,11 +8,16 @@
 <script>
 import TheMenuButton from '../utils/TheMenuButton.vue';
 import { defineComponent } from 'vue';
+import { mapState } from 'vuex';
+
 export default defineComponent({
     name: "TheHeaderComponent",
     components:{
         TheMenuButton
-    }
+    },
+	computed:{
+		...mapState('auth', ["isAuthenticated"]),
+	}
     
 })
 </script>

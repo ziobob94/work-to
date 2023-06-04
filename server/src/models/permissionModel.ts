@@ -3,9 +3,10 @@ import { PermissionModel } from "../databaseModels";
 
 export async function insertPermission(permission: IPermission ) : Promise<ApiReturn> {
   try {
+    permission.catKey = permission.slug;
     const created = await PermissionModel.create(permission);
     if (created) {
-      console.log('Permission created successfully: ', permission);
+      console.log('Permission created successfully: ', created);
       return {result: true, message: "User created successfully", code: 200};
     }
     else return {result: false, message: "User creation failed", code: 401};
@@ -31,8 +32,16 @@ export async function getAllPermission() : Promise<ApiReturn> {
       }, {
         '$group': {
           '_id': {
-            'slug': '$slug', 
-            'name': '$name'
+            'catKey': '$catKey'
+          }, 
+          'slug': {
+            '$last': '$slug'
+          }, 
+          'name': {
+            '$last': '$name'
+          }, 
+          'description': {
+            '$last': '$description'
           }, 
           'documents': {
             '$push': {
@@ -45,9 +54,10 @@ export async function getAllPermission() : Promise<ApiReturn> {
       }, {
         '$project': {
           '_id': 0, 
-          'slug': '$_id.slug', 
-          'name': '$_id.name', 
-          'description': '', 
+          'slug': '$slug', 
+          'name': '$name', 
+          'catKey': '$_id.catKey', 
+          'description': '$description', 
           'rolesIDS': '$documents'
         }
       }
@@ -66,13 +76,13 @@ export async function getAllPermission() : Promise<ApiReturn> {
   }
 }
 
-export async function deletePermission(id: any) : Promise<ApiReturn> {
+export async function deletePermission(permission: PermissionAPI) : Promise<ApiReturn> {
   
   try {
     
-    const values = await PermissionModel.findOneAndDelete({_id: id});
+    const values = await PermissionModel.deleteMany({catKey: permission.catKey});
     if (values) {
-      console.log('Permissions deleted');
+      // console.log('Permissions deleted');
       return {result: true, message: "Permissions deleted successfully", code: 200, data: values};
     }
     else return {result: false, message: "Permissions delete failed", code: 401};
@@ -109,7 +119,8 @@ async function addNewPermissionsPerRole(found: IPermission[], permission: Permis
       if(foundInd < 0) await PermissionModel.create({
         name: permission.name,
         slug: permission.slug,
-        descrtiption: permission.descrtiption || "",
+        catKey: permission.catKey,
+        description: permission.description || "",
         roleID: permission.rolesIDS[rInd].role
       })
       
@@ -128,7 +139,7 @@ export async function updatePermission(permission: PermissionAPI) : Promise<ApiR
 
   try {
     if(permission.rolesIDS.length === 0 ){
-       PermissionModel.deleteMany({slug: permission.slug});
+       PermissionModel.deleteMany({catKey: permission.catKey});
        ret.result= true; 
        ret.message= "Permission editing success";
        ret.code= 200;
@@ -139,7 +150,7 @@ export async function updatePermission(permission: PermissionAPI) : Promise<ApiR
     /**
     * FIND PermissionDocument WITH SAME SLUG OF permission 
     */
-    const found : IPermission[] = (await PermissionModel.find({slug: permission.slug}));
+    const found : IPermission[] = (await PermissionModel.find({catKey: permission.catKey}));
     
     
     if(found && found.length > 0 ) {
@@ -147,13 +158,15 @@ export async function updatePermission(permission: PermissionAPI) : Promise<ApiR
       deletePermissionByRole(found, permission)
       
       addNewPermissionsPerRole(found, permission )
+
+      const toUp : any = {
+          name: permission.name,           
+          slug: permission.slug,
+          catKey: permission.catKey,
+          description: (permission.description) ? permission.description : ""
+        }
       
-      
-      const updated = await PermissionModel.updateMany({slug: permission.slug}, {
-        name: permission.name,           
-        slug: permission.slug,
-        descrtiption: (permission.descrtiption) ? permission.descrtiption : ""
-      });
+      const updated = await PermissionModel.updateMany({catKey: permission.catKey}, toUp);
       
       if (updated) {
         console.log('Permission created successfully: ', permission);

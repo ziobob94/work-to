@@ -50,12 +50,11 @@ async function authMiddleware(to: any, from: any, next: any) {
     
 	const token = Cookies.get("auth");
 	
-	const parsed = parseJwt(token);
+	const parsed = await store.dispatch("shared/extractJwtData", "roleID");
 
-	debugger;
-
-    if(to.meta.isAdmin) {
-        const isValid = await checkAdmnin();
+    if(to.meta.isAdmin ) {
+		const isValid = (parsed === 'admin');
+		// debugger;
         if (!isValid) {
 			Swal.fire({
 				title: 'Ops..',

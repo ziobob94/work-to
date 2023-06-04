@@ -1,5 +1,5 @@
 // import passport from "../../passport";
-import express, { Router, Request, Response } from "express";
+import express, { Router } from "express";
 import dotenv from 'dotenv';
 import passport from "passport";
 import { registrationCallback, loginCallback, validateCallback, logoutCallback } from "../../controllers/main/authenticationController";

@@ -34,6 +34,9 @@
 			return{
 			}
 		},
+		async beforeCreate(){
+			this.$store.dispatch("auth/verifyToken")
+		},
 		async mounted() {
 			
 		},

@@ -95,12 +95,17 @@ const permissionSchema = new Schema<IPermission>({
     required: true,
     trim: false,
   },
-  descrtiption: {
+  description: {
     type: String,
     required: false,
     trim: false
   },
   slug: {
+    type: String,
+    required: true,
+    trim: false
+  },
+  catKey: {
     type: String,
     required: true,
     trim: false

@@ -8,7 +8,6 @@ const authModule = {
     state: {
         // Initial state
         isAuthenticated: false,
-        token: null,
     },
     mutations: {
         // Mutations to modify state
@@ -48,7 +47,7 @@ const authModule = {
         async handleSignupAPI(store: any, payload: any){
             let signed = null;
             try{ 
-                debugger
+                // debugger
                 signed = await instance.post("/api/register", payload );
                 return signed.data;
             }
@@ -83,7 +82,13 @@ const authModule = {
         },
 
         async callVerifyAPI(){
-            return await instance.get("/api/validate-token");
+            try {
+				// debugger;
+				return await instance.get("/api/validate-token");
+			}
+			catch(e){
+				return null;
+			}
         },
         async verifyToken ({commit,dispatch}: any) {
             
@@ -98,7 +103,9 @@ const authModule = {
                 dispatch("setAuthHeader", authCookie);
                 
                 const resp = await dispatch("callVerifyAPI");
-                
+
+                // debugger;
+
                 if(resp.data.result && resp.headers.authorization) {
                     // debugger;
                     dispatch("setAuthCookie", resp.headers.authorization);

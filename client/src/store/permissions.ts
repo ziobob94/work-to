@@ -77,14 +77,15 @@ const permissionsModule: Module<PermissionsState, any>= {
 				code: 500
 			}
 			
-			try{                
-				ret = await instance.post(`/api/admin/permissions/${payload.slug}`);
+			try{   
 				
-				if(ret.data.result) {
-					const d = ret.data;
-					d.message = ret.data.message;
-					return d.data;
+				const resp  = await instance.post(`/api/admin/permissions-delete`, payload);
+				// eslint-disable-next-line no-debugger
+				debugger
+				if(resp.data) {
+					ret = resp.data;
 				}
+				
 				
 			}
 			catch(err: any){
@@ -147,10 +148,10 @@ const permissionsModule: Module<PermissionsState, any>= {
 				code: 500
 			}
 			//eslint-disable-next-line
-			debugger;
+			// debugger;
 			console.log("PAYLOAD: ", payload)
 			try{                
-				ret = await instance.post(`/api/admin/permissions`, payload);
+				ret = await instance.post(`/api/admin/role-delete`, payload);
 				
 				if(ret.data.result) {
 					const d = ret.data;

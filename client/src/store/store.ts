@@ -21,5 +21,5 @@ const store : Store<RootState> = createStore(
 	}
 	
 	);
-	
-	export default store;
+
+export default store;

@@ -1,228 +1,254 @@
 <template>
 	<div class="w-100 mx-4 my-8 d-flex flex-column ">
 		<v-autocomplete
-		color="primary"
-		variant="outlined" 
-		v-model="permissionSelected"
-		:items="permissionsValues"
-		chips
-		clearable
-		closable-chips
-		item-title="name"
-		item-value="slug"
-		label="Select Permission"
-		return-object
-		>
-		<template v-slot:chip="{ props, item }">
-			<v-chip
-			v-bind="props"
-			:text="item.raw.name"
-			></v-chip>
-		</template>
-		
-		<template v-slot:item="{ props, item }">
-			<v-list-item
-			v-bind="props"
-			:title="item.raw.name"
-			></v-list-item>
-		</template>
-	</v-autocomplete>
-	
-	
-	<div class="w-100 d-flex justify-center text-center">
-		<v-dialog
-		v-model="permissionDialogToggle"
-		width="100%"
-		>
-		<v-card>
-			<v-form >
-				<v-container>
-					<h2 class="mb-4">{{ (!permissionSelected) ? 'Create new permission' : 'Edit permission'}}</h2>
-					<v-row>
-						<v-col
-						cols="12"
-						md="4"
-						>
-						<v-text-field
-						v-model="tempPermission.name"
-						label="Permission name"
-						required
-						color="primary"
-						variant="outlined" 
-						></v-text-field>
-					</v-col>
-					
-					<v-col
-					cols="12"
-					md="4"
-					>
-					<v-text-field
-					color="primary"
-					variant="outlined" 
-					v-model="tempPermission.slug"
-					label="Permission slug"
-					required
-					></v-text-field>
-				</v-col>
-				
-				<v-col
-				cols="12"
-				md="4"
-				>
-			</v-col>
-			
-			<v-col
-			cols="12"
-			md="4"
-			>
-			<v-text-field
 			color="primary"
 			variant="outlined" 
-			v-model="tempPermission.description"
-			label="Permission description"
-			required
-			></v-text-field>
-		</v-col>
-		
-		<v-col
-		cols="12"
-		md="4"
-		>
-	</v-col>
-	
-	
-	<v-autocomplete
-	color="primary"
-	variant="outlined" 
-	clearable
-	chips
-	label="Select Roles"
-	v-model="tempPermission.rolesIDS"
-	:items="rolesValues"
-	item-title="name"
-	item-value="role"
-	multiple
-	class="mx-2"
-	return-object
-	>
-</v-autocomplete>
-
-</v-row>
-</v-container>
-</v-form>
-<v-card-actions>
-	<v-btn color="primary" block @click="saveHandler">Save</v-btn>
-</v-card-actions>
-<v-card-actions v-if="permissionSelected">
-	<v-btn color="primary" block @click="deletePermission">Delete</v-btn>
-</v-card-actions>
-<v-card-actions>
-	<v-btn color="primary" block @click="permissionDialogToggle = false">Close</v-btn>                        
-</v-card-actions>
-</v-card>
-</v-dialog>
-</div>
-
-<v-dialog
-v-model="rolesDialogToggle"
-width="100%"
->
-<v-card>
-	<v-form >
-		<v-container>                            
-			<h2 class="mb-4">Create role</h2>
-			<v-row>
-				<v-col
-				cols="12"
-				md="4"
-				>
-				<v-text-field
-				v-model="newRole.name"
-				label="Role name"
-				required
-				color="primary"
-				variant="outlined" 
-				></v-text-field>
-			</v-col>
-			
-			<v-col
-			cols="12"
-			md="4"
+			v-model="permissionSelected"
+			:items="permissionsValues"
+			chips
+			clearable
+			closable-chips
+			item-title="name"
+			item-value="slug"
+			label="Select Permission"
+			return-object
 			>
-			<v-text-field
-			v-model="newRole.role"
-			label="Role ID"
-			required
-			color="primary"
-			variant="outlined" 
-			></v-text-field>
-		</v-col>
-		
-		<v-col
-		cols="12"
-		md="4"
-		>
-	</v-col>
-</v-row>
-</v-container>
-</v-form>
-<v-card-actions>
-	<v-btn color="primary" block @click="saveRole">Save</v-btn>
-</v-card-actions>
-<v-card-actions>
-	<v-btn color="primary" block @click="rolesDialogToggle = false">Close</v-btn>                        
-</v-card-actions>
-</v-card>
-</v-dialog>
-
-<div class="buttons-wrapper">
-	<div class="w-100 d-flex justify-start text-center">
-		<v-btn class="d-flex justify-start w-100 mb-2" 
-		@click="setPemissionForDialog(true)" 
-		prepend-icon="fas fa-plus" > 
-		{{(!permissionSelected) ? 'Add Permission' : 'Edit Permission' }}
-	</v-btn>
-</div>
-<div class="w-100 d-flex justify-center text-center">
-	<v-btn class="d-flex justify-start w-100 mb-2" prepend-icon="fas fa-plus" @click="rolesDialogToggle = !rolesDialogToggle"> Add Role </v-btn>
-</div>
-</div>
-
-<div v-if="permissionSelected" class="w-100 p-2 d-flex flex-column">
-	<div id="first" class="d-flex mb-4">
-		<v-list class="w-100 d-flex justify-space-between flex-column">
-			<v-list-subheader>PERMISSION</v-list-subheader>
-			
-			<v-list-item
-			v-for="(item, i) in getItems(permissionSelected, 'perm')"
-			:key="i"
-			:value="item"
-			>
-			<template v-slot:prepend>
-				<label>{{ item.title.toUpperCase() }}</label>
+			<template v-slot:chip="{ props, item }">
+				<v-chip
+				v-bind="props"
+				:text="item.raw.name"
+				></v-chip>
 			</template>
 			
-			<v-list-item-title class="ml-4" v-text="item.value"></v-list-item-title>
-		</v-list-item>
-	</v-list>
-</div>
-<div id="second"> 
-	<v-list class="d-flex flex-column">
-		<v-list-subheader>ROLES</v-list-subheader>
-		
-		<v-list-item
-		v-for="(item, i) in permissionSelected.rolesIDS"
-		:key="i"
-		:value="item"
-		>
-		<v-list-item-title v-text="item.name"></v-list-item-title>
-	</v-list-item>
-</v-list>
-</div>
-</div>
+			<template v-slot:item="{ props, item }">
+				<v-list-item
+				v-bind="props"
+				:title="item.raw.name"
+				></v-list-item>
+			</template>
+		</v-autocomplete>
+
+	
+		<div class="w-100 d-flex justify-center text-center">
+			<v-dialog
+				v-model="permissionDialogToggle"
+				width="100%"
+			>
+				<v-card>
+					<v-form >
+						<v-container>
+							<h2 class="mb-4">{{ (!permissionSelected) ? 'Create new permission' : 'Edit permission'}}</h2>
+							<v-row>
+								<v-col
+								cols="12"
+								md="4"
+								>
+									<v-text-field
+									v-model="tempPermission.name"
+									label="Permission name"
+									required
+									color="primary"
+									variant="outlined" 
+									>
+									</v-text-field>
+								</v-col>
+							
+							<v-col
+							cols="12"
+							md="4"
+							>
+								<v-text-field
+								color="primary"
+								variant="outlined" 
+								v-model="tempPermission.slug"
+								:placeholder="'example_slug'"
+								hint="Slugt must be lower case"
+								:rules="[(v) => validateSlug(v)]"
+								label="Permission slug"
+								required
+								></v-text-field>
+							</v-col>
+						
+							<v-col
+							cols="12"
+							md="4"
+							>
+							</v-col>
+					
+							<v-col
+							cols="12"
+							md="4"
+							>
+								<v-text-field
+								color="primary"
+								variant="outlined" 
+								v-model="tempPermission.description"
+								label="Permission description"
+								required
+								></v-text-field>
+							</v-col>
+				
+							<v-col
+							cols="12"
+							md="4"
+							>
+							</v-col>
+			
+							
+							<v-autocomplete
+								color="primary"
+								variant="outlined" 
+								clearable
+								:auto-select-first="true"
+								chips
+								label="Select Roles"
+								v-model="tempPermission.rolesIDS"
+								:items="rolesValues"
+								item-title="name"
+								item-value="role"
+								:rules="[(r) => ruleRoles(r)]"
+								multiple
+								class="mx-2"
+								return-object
+							>
+							</v-autocomplete>
+
+					</v-row>
+						</v-container>
+					</v-form>
+					<v-card-actions v-if="tempPermission.rolesIDS.length > 0">
+						<v-btn color="primary" block @click="saveHandler">Save</v-btn>
+					</v-card-actions>
+					<v-card-actions>
+						<v-btn color="primary" block @click="permissionDialogToggle = false">Close</v-btn>                        
+					</v-card-actions>
+				</v-card>
+			</v-dialog>
+		</div>
+
+		<v-dialog
+			v-model="rolesDialogToggle"
+			width="100%"
+			>
+			<v-card>
+				<v-form >
+					<v-container>                            
+						<h2 class="mb-4">Create role</h2>
+						<v-row>
+							<v-col
+							cols="12"
+							md="4"
+							>
+								<v-text-field
+									v-model="newRole.name"
+									label="Role name"
+									required
+									color="primary"
+									variant="outlined" 
+								>
+								</v-text-field>
+							</v-col>
+						
+							<v-col
+							cols="12"
+							md="4"
+							>
+								<v-text-field
+									v-model="newRole.role"
+									label="Role ID"
+									required
+									color="primary"
+									variant="outlined" 
+								>
+								</v-text-field>
+							</v-col>
+						
+							<v-col
+							cols="12"
+							md="4"
+							>
+							</v-col>
+						</v-row>
+					</v-container>
+				</v-form>
+				<v-card-actions>
+					<v-btn color="primary" block @click="saveRole">Save</v-btn>
+				</v-card-actions>
+				<v-card-actions>
+					<v-btn color="primary" block @click="rolesDialogToggle = false">Close</v-btn>                        
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+
+		<div v-if="!permissionSelected" class="buttons-wrapper">
+			<div class="w-100 d-flex justify-start text-center">
+				<v-btn class="d-flex justify-start w-100 mb-2" 
+				@click="setPemissionForDialog(true)" 
+				prepend-icon="fas fa-plus" > 
+					Add Permission
+				</v-btn>		<div class="buttons-wrapper">
+		</div>
+			</div>
+		</div>
+		<div class="buttons-wrapper">
+			<div class="w-100 d-flex justify-center text-center">
+				<v-btn class="d-flex justify-start w-100 mb-2" prepend-icon="fas fa-plus" @click="rolesDialogToggle = !rolesDialogToggle"> Add Role </v-btn>
+			</div>
+		</div>
 
 
-</div>
+		<div v-if="permissionSelected" class="w-100 p-2 d-flex flex-column">
+			<div id="first" class="d-flex mb-4">
+				<v-list class="w-100 d-flex justify-space-between flex-column">
+					<v-list-subheader>PERMISSION</v-list-subheader>
+					
+					<v-list-item
+						v-for="(item, i) in getItems(permissionSelected, 'perm')"
+						:key="i"
+						:value="item"
+					>
+					<template v-slot:prepend>
+						<label>{{ item.title.toUpperCase() }}</label>
+					</template>
+					
+					<v-list-item-title class="ml-4" v-text="item.value"></v-list-item-title>
+					</v-list-item>
+			</v-list>
+		</div>
+		<div id="second"> 
+			<v-list class="d-flex flex-column">
+				<v-list-subheader>ROLES</v-list-subheader>
+				
+				<v-list-item
+					v-for="(item, i) in permissionSelected.rolesIDS"
+					:key="i"
+					:value="item"
+				>
+					<v-list-item-title v-text="item.name"></v-list-item-title>
+				</v-list-item>
+			</v-list>
+		</div>
+
+		</div>
+
+		<div v-if="permissionSelected" class="buttons-wrapper">
+			<div class="w-100 d-flex justify-start text-center">
+				<v-btn class="d-flex justify-start w-100 mb-2" 
+					@click="setPemissionForDialog(true)" 
+					prepend-icon="fas fa-plus" > 
+					Edit Permission
+				</v-btn>
+			</div>
+			<div class="w-100 d-flex justify-start text-center">
+				<v-btn class="d-flex justify-start w-100 mb-2" 
+					@click="deletePermission"
+					prepend-icon="fas fa-plus" > 
+					Delete Permission
+				</v-btn>
+			</div>
+		</div>
+
+	</div>
 </template>
 
 <script lang="ts">
@@ -252,7 +278,7 @@ export default defineComponent({
 			dialogType: 'new',
 			saveFunction: async () => {},  
 			rolesSelected: [],
-			permissionSelected: null   
+			permissionSelected: null
 		}
 	},
 	computed:{
@@ -274,7 +300,6 @@ export default defineComponent({
 			await this.fetchRoles();
 			this.rolesSelected = [];
 			this.permissionSelected = null;
-			this.dialogType = 'new';
 			this.newRole = {
 				name: "",
 				role: "",
@@ -294,18 +319,21 @@ export default defineComponent({
 			this.fireSwal(ret,text);
 		},
 		async editPermission(){
+			
 			const text = "Edit Permission ";
 			
 			let ret : ApiReturn = await this.editPermissionAPI([this.tempPermission]);
 			
-			this.fireSwal(ret, text)
+			this.fireSwal(ret, text);
 		},
 		//@ts-ignore
 		async deletePermission(){
+			
 			const text = "Delete Permission ";
 			
 			let ret = await this.deletePermissionAPI([this.permissionSelected]);
-			
+			// eslint-disable-next-line no-debugger
+			debugger;
 			await this.fireSwal(ret, text);
 			
 		},
@@ -358,15 +386,11 @@ export default defineComponent({
 			}
 			else {
 				if(ret.result) {
-				this.newRole = {
-					name: "",
-					role: "",
-				}
-				await  this.init();
-				swalOpt.title = 'Success';
-				swalOpt.text += 'Success';
-				swalOpt.icon = 'success';
-				
+					await  this.init();
+					swalOpt.title = 'Success';
+					swalOpt.text += 'Success';
+					swalOpt.icon = 'success';
+					
 				}
 				else {
 					swalOpt.title = 'Fail';
@@ -374,19 +398,39 @@ export default defineComponent({
 					swalOpt.icon = 'warning';
 				}
 			}
-
+			
 			if (dialog === "permissions") {
 				this.permissionDialogToggle = !this.permissionDialogToggle
-			}else{
+			}
+			else{
+				this.rolesDialogToggle = !this.rolesDialogToggle
+			}	
+			
+			await this.swalFire(swalOpt);		
+			
+			if(!ret.result) {
+				if (dialog === "permissions") {
+					this.permissionDialogToggle = !this.permissionDialogToggle
+				}else{
 					this.rolesDialogToggle = !this.rolesDialogToggle
-				}			
-			// await this.$swal.fire(swalOpt);
-			await this.swalFire(swalOpt);
-			if (dialog === "permissions") {
-				this.permissionDialogToggle = !this.permissionDialogToggle
-			}else{
-					this.rolesDialogToggle = !this.rolesDialogToggle
-				}			
+				}	
+			}
+		},
+		ruleRoles(v: any[]){
+			// eslint-disable-next-line no-debugger
+			// debugger;
+			//console.log(v);
+			return (v.length > 0 )  ? true : "Roles cannot be empty";
+		},
+		validateSlug(v: string){
+			const regex = /^(?!_)(?!.*_$)[a-z0-9_]+$/g;
+			// eslint-disable-next-line no-debugger
+			//debugger;
+			let ret = null;
+			if (v.length > 0) ret = regex.test(v);
+			else "Empty Slug";
+			//console.log(v);
+			return ret || "Slug not valid";
 
 		}
 	}

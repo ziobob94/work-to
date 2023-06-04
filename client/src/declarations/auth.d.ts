@@ -1,5 +1,5 @@
 export declare interface AuthState {
-	user: any
+	isAuthenticated: any
 }
 
 declare module 'vuex' {
