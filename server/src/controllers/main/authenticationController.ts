@@ -1,8 +1,7 @@
 import bcrypt from 'bcryptjs';
 import jwt from "jsonwebtoken";
-import { UserModel } from "../../databaseModels";
 import { ApiReturn, IUser } from '../../types';
-import { insertUser } from '../../models/userModel';
+import { UserModel, insertUser } from '../../models/userModel';
 import * as messages from "../../messages.json"
 import { Request,Response } from "express";
 import { getUserPermissions } from '../../models/permissionModel';

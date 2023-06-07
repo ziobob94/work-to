@@ -52,7 +52,7 @@ async function authMiddleware(to: any, from: any, next: any) {
     
 	const token = Cookies.get("auth");
 	
-	const parsed = await store.dispatch("shared/extractJwtData", "roleID");
+	const parsed = await store.dispatch("main/extractJwtData", "roleID");
 
     if(to.meta.isAdmin ) {
 		const isValid = (parsed === 'admin');

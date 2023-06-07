@@ -3,7 +3,7 @@
     <v-bottom-navigation :grow="true"  color="primary">
         <v-btn
             v-for="item in ((!isAuthenticated) ? itemsLogged : itemsOut)"
-            :key="item.route"
+            :key="item.name"
             :to="item.route"
             @click="item.click"
             exact

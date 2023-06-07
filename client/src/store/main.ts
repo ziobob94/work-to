@@ -1,4 +1,4 @@
-import { SharedModule } from "@/declarations/shared";
+import { MainModule } from "@/declarations/shared";
 import { SweetAlertOptions } from "sweetalert2";
 import { ActionContext, Module } from "vuex";
 import app from "@/main";
@@ -8,7 +8,8 @@ import { parseJwt } from "@/lib/utils";
 import { PermissionValue } from "@/declarations/permissions";
 import store from "./store";
 
-export declare interface SharedState {
+export declare interface MainState {
+	sidebarToggle: boolean
 }
 
 const swalOptions : SweetAlertOptions = {
@@ -18,14 +19,18 @@ const swalOptions : SweetAlertOptions = {
 	icon: "error"
 }
 
-const sharedModule : Module<SharedState, any> = {
+const mainModule : Module<MainState, any> = {
     namespaced: true,
     state: {
+		sidebarToggle: null,
 	},
     getters: {
 
 	},
     mutations: {
+		setSidebarToggle(state) {
+			state.sidebarToggle = !state.sidebarToggle;
+		}
     },
     actions: {
         async swalFire({state, commit}, payload: SweetAlertOptions){
@@ -69,7 +74,7 @@ const sharedModule : Module<SharedState, any> = {
 			const perms = await dispatch("extractJwtData", 'permissions' );
 			return perms.map((el: any) => el.slug);
 		},
-		async getUserLoggedData({dispatch,rootState}, payload) : Promise<string[]>{
+		async getUserLoggedData({dispatch,rootState}, payload ) : Promise<string[]>{
 			const authState = rootState.auth;
 			let isAuth = authState.isAuthenticated;
 			if(!isAuth) {
@@ -80,8 +85,15 @@ const sharedModule : Module<SharedState, any> = {
 			// eslint-disable-next-line no-debugger
 			// debugger;
 			return user[payload];
+		},
+		toggleSidebar({commit, state}, action = "" ){
+			if(action !== "") {
+				if(action === 'close') commit("setSidebarToggle", false);
+				else commit("setSidebarToggle", true);
+			}
+			else commit("setSidebarToggle");
 		}
     }
 }
 
-export default sharedModule;
+export default mainModule;

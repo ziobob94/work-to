@@ -106,12 +106,12 @@ const authModule = {
 
                 // debugger;
 
-                if(resp.data.result && resp.headers.authorization) {
+                if(resp?.data?.result && resp?.headers?.authorization) {
                     // debugger;
                     dispatch("setAuthCookie", resp.headers.authorization);
                     dispatch("setAuthHeader", resp.headers.authorization);
                 }
-                isValid = resp.data.result;
+                isValid = resp?.data?.result || false;
                 
             }
             catch(err){

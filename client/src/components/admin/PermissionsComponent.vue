@@ -293,7 +293,7 @@ export default defineComponent({
 			saveRoleAPI: 'permissionsAd/saveRoleAPI',
 			deletePermissionAPI: 'permissionsAd/deletePermissionAPI',
 			editPermissionAPI: 'permissionsAd/editPermissionAPI',
-			swalFire: 'shared/swalFire',
+			swalFire: 'main/swalFire',
 		}),
 		async init(){
 			await this.fetchPermissions();

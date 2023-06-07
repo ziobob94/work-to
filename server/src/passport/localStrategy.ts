@@ -1,7 +1,6 @@
 
 import { Strategy as LocalStrategy } from 'passport-local';
-
-import { UserModel } from '../databaseModels';
+import { UserModel } from '../models/userModel';
 
 export default new LocalStrategy({ usernameField: "email", passwordField: "password"}, async (email: string, password: string, cb) => {
     try {

@@ -9,11 +9,12 @@
 import TheMenuButton from '../utils/TheMenuButton.vue';
 import { defineComponent } from 'vue';
 import { mapState } from 'vuex';
+// import TheTopMenu from '../utils/TheTopMenu.vue';
 
 export default defineComponent({
     name: "TheHeaderComponent",
     components:{
-        TheMenuButton
+       TheMenuButton,
     },
 	computed:{
 		...mapState('auth', ["isAuthenticated"]),

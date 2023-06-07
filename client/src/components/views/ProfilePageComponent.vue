@@ -2,10 +2,7 @@
     <BodyLayoutTemplate>
         <template #body >
             <div class="body-wrapper home">
-                <div class="">
-                    <h1> Welcome </h1>
-                    <h1> To User profile page</h1>
-                </div>
+				<ProfileFormComponent/>
             </div>
         </template>
     </BodyLayoutTemplate>
@@ -14,10 +11,12 @@
 
 <script>
 import BodyLayoutTemplate from "@/components/layout/BodyLayoutTemplate.vue";
+import ProfileFormComponent from '../utils/ProfileFormComponent.vue';
 export default {
     name: 'ProfilePageComponent',
     components: {
         BodyLayoutTemplate,
+        ProfileFormComponent,
     },
     data(){
         return{

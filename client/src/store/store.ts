@@ -7,13 +7,13 @@ import userModule from './user';
 import authModule from './auth';
 import permissionsModule from './permissions';
 import { RootState } from '@/declarations/shared';
-import sharedModule from './shared';
+import mainModule from './main';
 
 
 const store : Store<RootState> = createStore(
 	{
 		modules:{
-			shared: sharedModule,
+			main: mainModule,
 			auth: authModule,
 			user: userModule,
 			permissionsAd: permissionsModule

@@ -24,15 +24,15 @@ export declare interface RootState {
 
 
   
-export declare interface SharedModule {
+export declare interface MainModule {
 	swalOptions: SweetAlertOptions,
-	toggleSwal: boolean
+	toggleSwal: boolean,
 }
 
 
 
 declare module 'vuex' {
 	interface Store<S> {
-		state: S & SharedModule;
+		state: S & MainModule;
 	}
 }
