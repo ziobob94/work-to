@@ -8,3 +8,4 @@ export async function getUserPageDataCallback(req: Request, res: Response)  : Pr
     
     return res.json(data);
 }
+

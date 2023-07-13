@@ -1,5 +1,6 @@
 import { ApiReturn, IPermission, IRole, PermissionAPI } from "../types";
 import mongoose, { Schema } from 'mongoose';
+import logger from "../logger";
 
 /**
  * SCHEMA DEFINITION
@@ -75,14 +76,14 @@ export async function insertPermission(permission: IPermission ) : Promise<ApiRe
     permission.catKey = permission.slug;
     const created = await PermissionModel.create(permission);
     if (created) {
-      console.log('Permission created successfully: ', created);
+      logger.info('Permission created successfully: ', created);
       return {result: true, message: "User created successfully", code: 200};
     }
     else return {result: false, message: "User creation failed", code: 401};
   }
   
   catch(error: any) {
-    console.error('Error creating permission: ', error);
+    logger.error('Error creating permission: ', error);
     return {result: false, message: error.message, code: 401};
   }
 }
@@ -133,14 +134,14 @@ export async function getAllPermission() : Promise<ApiReturn> {
     ]
     const values = await PermissionModel.aggregate(aggregation);
     if (values) {
-      console.log('Permissions got');
+      logger.info('Permissions got');
       return {result: true, message: "Permissions got successfully", code: 200, data: values};
     }
     else return {result: false, message: "Permissions get failed", code: 401};
   }
   
   catch(error: any) {
-    console.error('Error getting all permissions: ', error);
+    logger.error('Error getting all permissions: ', error);
     return {result: false, message: error.message, code: 401};
   }
 }
@@ -151,14 +152,14 @@ export async function deletePermission(permission: PermissionAPI) : Promise<ApiR
     
     const values = await PermissionModel.deleteMany({catKey: permission.catKey});
     if (values) {
-      // console.log('Permissions deleted');
+      // logger.info('Permissions deleted');
       return {result: true, message: "Permissions deleted successfully", code: 200, data: values};
     }
     else return {result: false, message: "Permissions delete failed", code: 401};
   }
   
   catch(error: any) {
-    console.error('Error deleteing permission: ', error);
+    logger.error('Error deleteing permission: ', error);
     return {result: false, message: error.message, code: 401};
   }
 }
@@ -238,7 +239,7 @@ export async function updatePermission(permission: PermissionAPI) : Promise<ApiR
       const updated = await PermissionModel.updateMany({catKey: permission.catKey}, toUp);
       
       if (updated) {
-        console.log('Permission created successfully: ', permission);
+        logger.info('Permission created successfully: ', permission);
         ret.result= true; 
         ret.message= "Permission editing success";
         ret.code= 200;
@@ -247,7 +248,7 @@ export async function updatePermission(permission: PermissionAPI) : Promise<ApiR
     }
   }
   catch(error: any) {
-    console.error('Editing permission error: ', error);
+    logger.error('Editing permission error: ', error);
   }
   return ret;
 }
@@ -262,14 +263,14 @@ export async function getUserPermissions(userRole: string) : Promise<ApiReturn> 
     try {
     const permissions = await PermissionModel.find({  roleID: userRole  });
     if (permissions) {
-      console.log('User permission successfully: ', permissions);
+      logger.info('User permission successfully: ', permissions);
       return {result: true, message: "User created successfully", code: 200, data: permissions};
     }
     else return {result: false, message: "User creation failed", code: 401};
   }
   
   catch(error: any) {
-    console.error('Error creating permission: ', error);
+    logger.error('Error creating permission: ', error);
     return {result: false, message: error.message, code: 401};
   }
   return {result: false, message: "message", code: 401};

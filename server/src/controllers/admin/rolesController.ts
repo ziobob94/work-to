@@ -1,11 +1,12 @@
 import { ApiReturn, IRole} from "../../types"
 import { getAllRole, insertRole } from "../../models/roleModel";
+import logger from "../../logger";
 import {
     Request, Response
 } from "express";
 
 export async function createRoles( req: Request, res: Response): Promise<Response<any, Record<string, any>>>{
-    console.log("[routes.auth.bindAuthRoutes] ROURTE -> /regiter");
+    logger.info("ROURTE -> /regiter");
     
     let roleCreated : ApiReturn = {result: false, message: "Signup Failed", code: 500 };
     
@@ -22,7 +23,7 @@ export async function createRoles( req: Request, res: Response): Promise<Respons
         roleCreated = await createHelper(perms);
     }
     catch(err){
-        console.error("[auth.registerHelper] ERROR: ", err)
+        logger.error("ERROR: ", err)
         roleCreated = {result: false, message: "Signup Failed", code: 500 };
     }
     

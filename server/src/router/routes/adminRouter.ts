@@ -12,7 +12,7 @@ const adminRouter : Router = express.Router();
  */
 adminRouter.use("/admin", passport.authenticate('jwt', {session: false}),
     (req: any, res, next) => {
-        // console.log("CIAO", req);
+        // logger.info("CIAO", req);
 
         if(req.isAuthenticated() && req.user.roleID === 'admin') return next();
 

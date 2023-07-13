@@ -2,6 +2,7 @@
 import { Strategy as JwtStrategy, ExtractJwt, StrategyOptions } from 'passport-jwt';
 import dotenv from 'dotenv';
 import { UserModel } from '../models/userModel';
+import logger from '../logger';
 dotenv.config();
 
 
@@ -32,7 +33,7 @@ async function jwtStrategyHandler(payload, done) {
 
   }
    catch (err) {
-    console.error("[passport.JwtStrategy] ERROR: ", err)
+    logger.error("ERROR: ", err)
     return done(err, false);
   }
 }

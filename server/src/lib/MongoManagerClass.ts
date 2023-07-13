@@ -3,6 +3,8 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import MongoStore from "connect-mongo";
 import { sleep } from '../utils';
+import logger from '../logger';
+
 
 
 export class MongoMangerClass{
@@ -35,11 +37,11 @@ export class MongoMangerClass{
         
             while(!this.db){
                 try{
-                    console.log("[MongoManagerClass.connect] TRY TO CONNECTING TO MONGODB")
+                    logger.info({file: __filename,  scope:'connect', message: 'CONNECTING TO MONGODB'});
                     this.db = await mongoose.connect(mongoURI)
                 }
                 catch(err){
-                    console.warn("[MongoManagerClass.connect] ERROR CONNECTING TO MONGODB: ", err.message);
+                    logger.warn({file: __filename, scope:'connect', message: "ERROR CONNECTING TO MONGODB" + err.message, error: err } );
                     this.db = null;
                     sleep(5000);
                 }
@@ -47,12 +49,12 @@ export class MongoMangerClass{
             
             this.mongoStore = MongoStore.create({ mongoUrl: mongoURI })
             
-            console.log("[MongoMangerClass.connect] DATABASE CONNECTION: ", !!this.db);
+            logger.info("DATABASE CONNECTION: ", !!this.db);
             
             return !!this.db;
         }
         catch(err){
-            console.error("[SERVER][ServerClass.run] ERROR: ", err);
+            logger.error({file: __filename, scope:'connect', message: "ERROR CONNECTING TO MONGODB" + err.message, error: err } );
             return null;
         }
         

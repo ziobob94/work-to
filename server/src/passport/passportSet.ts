@@ -5,8 +5,8 @@ import jwtStategy from './jwtStategy';
 import localStrategy from './localStrategy';
 import facebookStrategy from './facebookStrategy';
 import googleStrategy from './googleStrategy';
-
-
+import logger, { LoggerOpt } from '../logger';
+const logOpt = LoggerOpt(__filename);
 
 // Passport configuration
 passport.use( googleStrategy );
@@ -17,7 +17,7 @@ passport.use( jwtStategy );
 
 passport.serializeUser<any, any>((user, done: any) => {
   // Serialize the user object
-  console.log("USER: ", user);
+  logger.info("USER: ", user);
   done(null, user);
 });
 
@@ -27,9 +27,6 @@ passport.deserializeUser<any, any>((id, done) => {
   const user : any = null;
   done(null, user);
 });
-
-
-console.log("[passport] CONFIGURE STRATEGIES DONE ");
 
 
 export default passport;

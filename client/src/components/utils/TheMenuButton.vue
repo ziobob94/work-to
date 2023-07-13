@@ -13,7 +13,6 @@ export default {
 	methods: {
 		...mapActions({
 			toggleSidebar: 'main/toggleSidebar'
-
 		})
 	}
 }

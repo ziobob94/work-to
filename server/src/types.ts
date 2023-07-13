@@ -36,3 +36,14 @@ export type ApiReturn = {
 export interface PermissionAPI extends Omit<IPermission, 'roleID'> {
     rolesIDS: IRole[]
 }
+
+
+export type LoggerOption = {
+  message?: string,
+  file: string,
+  error?: any,
+  scope?: string,
+  data?: any,
+  stack?: any,
+  className?: string
+}

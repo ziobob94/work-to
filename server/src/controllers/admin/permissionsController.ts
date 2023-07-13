@@ -2,10 +2,16 @@ import { Request, Response } from 'express';
 import { ApiReturn, PermissionAPI, IPermission, IRole } from "../../types";
 import { getAllPermission, insertPermission, deletePermission, updatePermission } from "../../models/permissionModel";
 import * as _ from 'lodash';
+import logger, {LoggerOpt} from '../../logger';
+
+const logOpt = LoggerOpt(__filename);
+
+
 
 export async function createPermissions( req: Request, res: Response): Promise<Response<any, Record<string, any>>>{
-    console.log("[routes.auth.bindAuthRoutes] ROURTE -> /regiter");
     
+    logger.info({file: __filename, message: 'Creating Permissions'});
+
     let permissionCreated : ApiReturn = {result: false, message: "Signup Failed", code: 500 };
     
     try {
@@ -21,8 +27,8 @@ export async function createPermissions( req: Request, res: Response): Promise<R
         permissionCreated = await createHandler(perms);
     }
     catch(err){
-        console.error("[auth.registerHandler] ERROR: ", err)
         permissionCreated = {result: false, message: "Signup Failed", code: 500 };
+        logger.error({file: __filename, message: err.message, error: err, data: permissionCreated})
     }
     
     return res.json(permissionCreated); 
@@ -88,7 +94,7 @@ export async function readPermissions(permissionsSlugs: string[], roleID = ""): 
 
 
 export async function updatePermissionCallback( req: Request, res: Response): Promise<Response<any, Record<string, any>>>{
-    console.log("[routes.auth.bindAuthRoutes] ROURTE -> /permission");
+    logger.info("ROURTE -> /permission");
     
     let permissionUpdated : ApiReturn = {result: false, message: "Signup Failed", code: 500 };
     
@@ -104,7 +110,7 @@ export async function updatePermissionCallback( req: Request, res: Response): Pr
         else permissionUpdated = await updatePermissionHandler(perms);
     }
     catch(err){
-        console.error("[auth.registerHandler] ERROR: ", err)
+        logger.error("ERROR: ", err)
         permissionUpdated = {result: false, message: "Signup Failed", code: 500 };
     }
     

@@ -1,4 +1,7 @@
 import { ApiReturn } from "./types";
+import logger, {LoggerOpt} from "./logger";
+
+const logOpt = LoggerOpt(__filename);
 
 export function sleep(ms: number) {
     return new Promise((resolve) => setTimeout(() => resolve, ms ))
@@ -15,7 +18,16 @@ export function normalizeResponse( res: any, data: ApiReturn, key: string ): { [
         return {[key]: data}
     }
     catch(err){
-        console.error("[utils.normalizeResponse] ERROR: ", err);
+        logOpt.error = err;
+        logOpt.message = err.message;
+        logger.error(logOpt);
         return null;
     }
 }
+
+
+export function getCurrentStack() {
+    const error = new Error();
+
+    return error.stack;
+  } 

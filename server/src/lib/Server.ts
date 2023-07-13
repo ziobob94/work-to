@@ -10,107 +10,9 @@ dotenv.config();
 import path from 'path';
 import compression from 'compression';
 import userRouter from '../router/routes/userRouter';
-/* 
-export class ServerClass{
-    
-    mdb: MongoMangerClass;
+import logger, { LoggerOpt } from '../logger';
 
-    server: Express;
-    
-    constructor(){
-        this.mdb = new MongoMangerClass();
-        this.server = null;
-        this.run()
-        .then((result) =>{
-            return result;
-        })
-        .catch((err) => {
-            console.error("[SERVER][ServerClass.constructor] ERROR: ", err);
-            
-        })
-        
-    }
-    
-    
-    public setMiddlewares(){
-        // this.server.use(ensureAuthenticated)
-        console.log("[serverClass.setMiddlewares] SUCCESS");
-    }
-    
-    
-    public setRoutes(){
-        
-        bindAuthenticationRoutes(this.server,this.mdb);
-        bindAuthorizationRoutes(this.server,this.mdb);
-        
-        
-        // Error handling middleware
-        this.server.use((err: any, req: Request, res: Response, next: NextFunction) => {
-            res.status(500).json({ error: err.message });
-        });
-        
-        console.log("[serverClass.setRoutes] SUCCESS");
-        
-    }
-    
-    private initializeCors() {
-
-        //console.log(process.env)
-        
-        const corsOptions : CorsOptions= {
-            origin: JSON.parse(process.env.ALLOWED_HOSTS),
-            methods: JSON.parse(process.env.METHODS) , 
-            allowedHeaders: JSON.parse(process.env.ALLOWEDHEADERS) ,
-            exposedHeaders: JSON.parse(process.env.EXPOSEDHEADERS) ,
-            credentials: (process.env.CREDENTIALS === 'true') ,
-            maxAge: parseInt(process.env.MAXAGE) 
-        };
-
-        return cors(corsOptions);
-    }
-    
-    public async init() {
-        
-        try {
-            dotenv.config();
-            const server : Express = express();
-            const port : string = process.env.SERVER_PORT;
-            const corsInstance = this.initializeCors();
-
-            server.use(corsInstance);
-
-            server.use(bodyParser.json());
-            
-            this.server = server;
-
-            this.server.use(passport.initialize());            
-            
-            this.setMiddlewares();
-
-            this.setRoutes();
-            
-            server.listen(port);
-            
-            console.log("[SERVER][ServerClass.run] Server listening on port: ", port);
-            
-            return server;
-        }
-        catch(err){
-            console.error("[SERVER][ServerClass.run] ERROR: ", err);
-            return null;
-        }
-        
-    }
-    
-    public async run () {
-        const connected: boolean = await this.mdb.connect();
-        if(connected) return null;
-        return await this.init();
-    }
-    
-}
- */
-
+const logOpt = LoggerOpt(__filename);
 
 const mdb : MongoMangerClass = new MongoMangerClass();
 
@@ -132,7 +34,7 @@ function setRouter(){
         res.status(500).json({ error: err.message });
     });
     
-    console.log("[serverClass.setRoutes] SUCCESS", process.env.MODE );
+    logger.info("SUCCESS", process.env.MODE );
 
     if(process.env.MODE === "production" ) {
         const p = process.env.CLIENT_INDEX_PATH;
@@ -151,7 +53,7 @@ function setRouter(){
 
 function initializeCors() {
 
-    //console.log(process.env)
+    //logger.info(process.env)
     
     const corsOptions : CorsOptions= {
         origin: JSON.parse(process.env.ALLOWED_HOSTS),
@@ -188,12 +90,18 @@ async function init() {
         
         server.listen(port);
         
-        console.log("[SERVER][ServerClass.run] Server listening on port: ", port);
+        logOpt.message = `Server listening on port: ${port}`;
+        logOpt.scope = 'init'
+        logger.info(logOpt);
+
         
         return server;
     }
     catch(err){
-        console.error("[SERVER][ServerClass.run] ERROR: ", err);
+        logOpt.message = err.message;
+        logOpt.error = err;
+        logOpt.scope = 'init';
+        logger.error(logOpt);
         return null;
     }
     

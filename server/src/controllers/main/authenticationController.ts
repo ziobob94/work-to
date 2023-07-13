@@ -5,7 +5,7 @@ import { UserModel, insertUser } from '../../models/userModel';
 import * as messages from "../../messages.json"
 import { Request,Response } from "express";
 import { getUserPermissions } from '../../models/permissionModel';
-
+import logger from '../../logger';
 
 
 async function loginHelper(req: any) : Promise<ApiReturn> {
@@ -51,7 +51,7 @@ async function loginHelper(req: any) : Promise<ApiReturn> {
         return {result: true, code: 200,  message: 'Ok', data: token };
     }
     catch(err){
-        console.error("[auth.loginCallback] ERROR: ", err);
+        logger.error("ERROR: ", err);
         return {result: false, code:500,  message: messages["50023"]};
     }
 }
@@ -65,7 +65,7 @@ async function hashPassword(password: string): Promise<string> {
 
 
 async function registerHelper(req: Request, res: Response): Promise<ApiReturn>{
-    console.log("[routes.auth.bindAuthRoutes] ROURTE -> /regiter");
+    logger.info("ROURTE -> /regiter");
     
     let userInserted : ApiReturn = {result: false, message: messages["50003"], code: 500 };
     
@@ -86,7 +86,7 @@ async function registerHelper(req: Request, res: Response): Promise<ApiReturn>{
         userInserted = await insertUser(user);
     }
     catch(err){
-        console.error("[auth.registerHelper] ERROR: ", err)
+        logger.error("ERROR: ", err)
         userInserted = {result: false, message: messages["50003"], code: 500 };
     }
     res.statusCode = userInserted.code;
@@ -133,7 +133,7 @@ export async function validateCallback (req: Request,res: Response) : Promise<Re
 
     }
     catch(err){
-        console.error("[auth.validateCallback] ERROR: ", err);
+        logger.error("ERROR: ", err);
     }
     res.statusCode = response.code;
     res.statusMessage = response.message;
@@ -152,7 +152,7 @@ export async function logoutCallback(req: Request, res: Response) : Promise<Resp
         response.code = 200;
     }
     catch(err){
-        console.error("[auth.validateCallback] ERROR: ", err);
+        logger.error("ERROR: ", err);
     }
     res.statusCode = response.code;
     res.statusMessage = response.message;

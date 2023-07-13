@@ -1,7 +1,7 @@
 <template>
-	<div class="w-100 h-100 d-flex ">
-		<h2>Generality</h2>
-		<v-container>
+	<div class="w-100 h-100 d-flex flex-column">
+		<h2 class="pa-4">Generality</h2>
+		<v-container class="pa-4">
 			<v-text-field
 			v-model="signupData.first"
 			color="primary"

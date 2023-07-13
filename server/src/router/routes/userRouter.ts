@@ -1,7 +1,7 @@
 import express, { Router } from "express";
 // import { checkPermission } from "../../middlewares/authorizationMiddleware";
 import passport from "passport";
-import { getUserPageDataCallback } from "../../controllers/main/userController";
+import { getUserPageDataCallback } from "../../controllers/user/userController";
 
 
 const  userRouter: Router = express.Router();
@@ -11,7 +11,7 @@ const  userRouter: Router = express.Router();
  */
 userRouter.use("/user", passport.authenticate('jwt', {session: false}),
     (req: any, res, next) => {
-        // console.log("CIAO", req);
+        // logger.info("CIAO", req);
 
         if(req.isAuthenticated() && req.user.roleID === 'admin') return next();
 
