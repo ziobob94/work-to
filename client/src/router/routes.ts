@@ -36,15 +36,30 @@ export const routes : RouteRecordRaw[] = [
 		children: [
 			{
 				name: 'profile',
-				path: 'profile',
+				path: '/profile',
 				component:  () => import ("@/components/views/ProfilePageComponent.vue"),
 				meta: { transitionName: '', requiresAuth: true  },
+				children: [
+					{
+						name: 'privacy',
+						path: '/privacy',
+						component:  null, //() => import ("@/components/views/ProfilePageComponent.vue"),
+						meta: { transitionName: '', requiresAuth: true  },
+					},
+					{
+						name: 'payments',
+						path: "/posts",
+						component: null,
+						meta: { transitionName: '', requiresAuth: true  },
+					}
+		
+				]
 			},
 			{
 				name: 'posts',
-				path: "posts",
+				path: "/posts",
 				component: null,
-				meta: { transitionName: '', requiresAuth: true  },
+				meta: { transitionName: '', requiresAuth: true  }
 			}
 
 		]

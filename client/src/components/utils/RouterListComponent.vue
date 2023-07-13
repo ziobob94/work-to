@@ -1,17 +1,47 @@
 <template>
-
 	<v-list v-if="isAuthenticated && items.length > 0">
 		<v-list-item
-			v-for="(item, index) in items"
-			:key="index"
-			:value="index"
-			@click="goTo(item.route)"
-			model     
-			:class="classNames || 'w-100' "
-			:style="styleObject || {'display': (item.visible) ? 'flex' : 'none'}"
-		>
-			<v-list-item-title> {{ item.title }} </v-list-item-title>
-		</v-list-item> 
+			prepend-avatar="https://randomuser.me/api/portraits/men/78.jpg"
+			title="John Leider"
+			></v-list-item>
+			
+		<v-divider></v-divider>
+
+		<div v-for="(item, index) in items" :key="'side-link-'+index">
+			<v-list-item
+				:value="index"
+				@click="goTo(item.route)"
+				model     
+				:class="classNames || 'w-100' "
+				:style="styleObject || {'display': (item.visible) ? 'flex' : 'none'}"
+			>
+				<v-list-item-title> {{ item.title }} </v-list-item-title>
+			</v-list-item> 
+			<v-menu v-if="item.children?.length > 0" offset-y>
+				<template v-slot:activator="{ on }">
+					<v-list-item
+						:value="index"
+						@click="goTo(item.route)"
+						model     
+						v-on="on"
+					>
+						<v-list-item-icon>
+							<v-icon>mdi-menu</v-icon>
+						</v-list-item-icon>
+						<v-list-item-title>Submenu</v-list-item-title>
+					</v-list-item>
+				</template>
+				<v-list>
+					<v-list-item router :to="{ path: '/submenu-item-1' }">
+					<v-list-item-title>Submenu Item 1</v-list-item-title>
+					</v-list-item>
+					<v-list-item router :to="{ path: '/submenu-item-2' }">
+					<v-list-item-title>Submenu Item 2</v-list-item-title>
+					</v-list-item>
+				</v-list>
+			</v-menu>
+		</div>
+		
 	</v-list> 
 
 </template>
@@ -36,7 +66,27 @@ data() {
 				params: {
 					id: null
 				}
-			}
+			},
+			children:[
+				{
+					title: 'Privacy and security',
+					name: '/privacy',
+					permission: 'can_view_privacy_page',
+					visible: false,
+					route: {
+						name: 'privacy',
+					},
+				},
+				{
+					title: 'Payments',
+					name: '/payments',
+					permission: 'can_view_payments_page',
+					visible: false,
+					route: {
+						name: 'payments'
+					},
+				}
+			]
 		},
 /* 			{
 			title: 'Privacy',
